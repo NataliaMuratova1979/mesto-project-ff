@@ -1,35 +1,35 @@
-function makeCard(someObject, someFunction) { 
-    //при вызове функции на место someObject встанет объект массива, на место someFunction - функция deleteCard
+function makeCard(cardObject, deleteFunction) { 
+    //при добавлении карточки cardObject присвоим элемент массива, на место deleteFunction встанет функция deleteCard
 
     const cardTemplate = document.querySelector('#card-template').content; // берем шаблон
-    console.log(cardTemplate); //ok
 
     const placesItem = cardTemplate.querySelector('.places__item').cloneNode(true); // клонируем его, создаем объект
-    console.log(placesItem);
 
-    const placesList = document.querySelector('.places__list');
-
-    placesItem.querySelector('.card__title').textContent = someObject.name; //элемент массива 
-    placesItem.querySelector('.card__image').src = someObject.link; //элемент массива
-    placesItem.querySelector('.card__image').alt = someObject.name; //элемент массива
-
-    placesList.append(placesItem); //добавляем карточку 
-
+    placesItem.querySelector('.card__title').textContent = cardObject.name; //элемент массива 
+    placesItem.querySelector('.card__image').src = cardObject.link; //элемент массива
+    placesItem.querySelector('.card__image').alt = cardObject.name; //элемент массива
+  
     const deleteButton = placesItem.querySelector('.card__delete-button'); // назначаем кнопку удаления
     
     deleteButton.addEventListener('click', () => { 
-        someFunction(placesItem); // 
+        deleteFunction(placesItem); // 
     }); 
+
+    return placesItem;
+    console.log(placesItem);
 }
 
 function deleteCard(item) { //deleteCard будет на месте deleteFunction при объявлении addCard
    item.remove(); //убираем карточку
 }
   
-function addCard(someArray) { //при вызове функции на место someArray встанет наш массив initialCards
-  for (i = 0; i < someArray.length; i++) {
-    const someObject = someArray[i];
-    makeCard(someObject, deleteCard);
+function addCard(cardArray) { //при вызове функции на место cardArray встанет наш массив initialCards
+  for (i = 0; i < cardArray.length; i++) {
+    const cardObject = cardArray[i];
+
+    const placesList = document.querySelector('.places__list');
+
+    placesList.append(makeCard(cardObject, deleteCard)); //добавляем карточку 
   }
 }
     
