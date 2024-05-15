@@ -1,3 +1,5 @@
+import './pages/index.css'; 
+
 function makeCard(cardElement, deleteCallBack) { 
     //при добавлении карточки cardElement = элемент массива, deleteCallBack = deleteCard
 
@@ -23,14 +25,28 @@ function deleteCard(item) { //deleteCard => deleteCallBack при объявле
    item.remove(); //убираем карточку
 }
   
-function addCard(cardArray) { //при вызове функции на место cardArray встанет наш массив initialCards
-  for (i = 0; i < cardArray.length; i++) {
+/*function addCard(cardArray) { //при вызове функции на место cardArray встанет наш массив initialCards
+ /* for (i = 0; i < cardArray.length; i++) {
     const cardElement = cardArray[i];
 
     const placesList = document.querySelector('.places__list');
 
     placesList.append(makeCard(cardElement, deleteCard)); //добавляем карточку 
   }
-}
-    
+}*/
+
+function addCard(cardArray) {
+
+  cardArray.forEach((data) => { //data - каждый элемент массива 
+    console.log(data);
+
+    const card = makeCard(data, deleteCard); //подставляем data в функцию makeCard
+    console.log(card);
+
+    const placesList = document.querySelector('.places__list');
+    placesList.append(card);
+  });
+
+
+}    
 addCard(initialCards);
