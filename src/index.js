@@ -4,7 +4,7 @@ import { initialCards } from './scripts/cards.js';
 const popup = document.querySelector('.popup');  
 
 
-//-----------------------------функция открытия попапа --------------------------------------//
+//-----------------------------функция открытия попапа - modal.js --------------------------------------//
 
 const popupEdit = document.querySelector('.popup_type_edit'); // модальное окно редактировать профиль
 const openEditButton = document.querySelector('.profile__edit-button'); //кнопка открытия окна редактирования профиля
@@ -16,18 +16,19 @@ function openPopupWindow(button, window) {
   button.addEventListener('click', function (event) {
     window.classList.add("popup_is-opened");
   });
-  closeModalByOverlay(window);
+  closeModalByOverlay(window); // функция закрытия по оверлею
+  closeModalByEsc(window); // функция закрытия по кнопке esc
 }
 
 openPopupWindow(openEditButton, popupEdit);
 openPopupWindow(openAddButton, popupAdd);
 
-// --------------- Назначаем кнопки закрытия модальных окон ---------------- //
+// --------------- Назначаем кнопки закрытия модальных окон - modal.js ---------------- //
 
 let closePopupButtons = document.querySelectorAll('.popup__close'); //массив кнопки закрытия модального окна
 closePopupButtons.forEach(closeModal);
 
-// ---------------- функция закрытия модального окна по кнопке ---------------- //
+// ---------------- функция закрытия модального окна по кнопке - modal.js ---------------- //
 
 function closeModal(button)  {
   button.addEventListener('click', function (event) { 
@@ -40,11 +41,11 @@ function closeModal(button)  {
   });
 }
 
-// ---------------- функция закрытия модального окна по оверлею ---------------- //
+// ---------------- функция закрытия модального окна по оверлею - modal.js ---------------- //
 // функция вызывается в коде на строке 18 (для модальных окон редактирования) и строке 133 (для попапа большой картинки)
 
 function closeWindow(window) {
-  window.classList.add('popup_is-animated');
+  window.classList.remove('popup_is-opened');
 };
 
 function closeModalByOverlay(popupToClose) {
@@ -58,20 +59,26 @@ function closeModalByOverlay(popupToClose) {
     console.log('в чем разница');
     console.log(event.currentTarget);
 
-    closeModal(event.target);
+    closeWindow(popupToClose);
   }
 });
 };
 
-// ---------------- функция закрытия модального окна по esc ---------------- //
-/*
-popup.addEventListener('keydown', function(e) {
-  if(e.key === 27 ){
 
-  closeWindow(popupOpened);
+// ---------------- функция закрытия модального окна по esc - modal.js ---------------- //
+
+function closeModalByEsc(popupToClose) {
+  popup.addEventListener('keydown', function(e) {   
+
+  if(e.key === 27 ) {
+  closeWindow(popupToClose);
+  popup.removeEventListener;
   }
-  });
-*/
+});
+};
+
+// ------------------------ функция создания карточки card.js------------------------// 
+
 
 function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack) { //при добавлении карточки cardElement = элемент массива, deleteCallBack = deleteCard
 
@@ -110,15 +117,15 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack) 
 
 // ----------------- Функции - колбэки ----------------- //
 
-function deleteCard(item) { //deleteCard => deleteCallBack при объявлении addCard
+function deleteCard(item) { //deleteCard => deleteCallBack при объявлении addCard card.js
    item.remove(); //убираем карточку
 }
 
-function activeLikeButton(button) { // activeLikeButton => likeCallBack при объявлении addCard
+function activeLikeButton(button) { // activeLikeButton => likeCallBack при объявлении addCard card.js
   button.classList.add('card__like-button_is-active');
 };
 
-function openPopup(cardElement) { // openPopup => openPopupCallBack при объявлении addCard
+function openPopup(cardElement) { // openPopup => openPopupCallBack при объявлении addCard modal.js
 
     const popupImageWindow = document.querySelector('.popup_type_image'); // модальное окно
     const popupImageContent = popupImageWindow.querySelector('.popup__content_content_image');
@@ -131,9 +138,10 @@ function openPopup(cardElement) { // openPopup => openPopupCallBack при об�
   popupImageWindow.classList.add('popup_is-opened');
 
   closeModalByOverlay(popupImageWindow); //функция закрытия по оверлею 
+  closeModalByEsc(popupImageWindow); //функция закрытия по кнопке esc
 };  
 
-// --------------- Создаем новую карточку ---------------- //
+// --------------- Создаем новую карточку card.js ---------------- //
 
 const placePopup = document.querySelector('.popup_type_new-card');
 
@@ -174,10 +182,8 @@ formElementPlace.addEventListener('submit', makeNewCardData);
 savePlaceButton.addEventListener('click', function (event) { // закрываем попап по кнопке Сохранить
   placePopup.classList.add('popup_is-animated');
 });
-  
 
-
-// -------------- Добавляем карточки на страницу ---------------- //
+// -------------- Добавляем карточки на страницу index.js---------------- //
 
 const placesList = document.querySelector('.places__list'); // был внутри функции addCard
 
@@ -195,8 +201,7 @@ function addCard(cardArray) {
 addCard(initialCards);
 
 
-
-// --------------- Редактируем профиль ---------------- //
+// --------------- Редактируем профиль - index.js ---------------- //
 
 const formElement = document.forms[0]; // это первая форма в документе
 const nameInput = formElement.elements.name;
@@ -213,30 +218,3 @@ formElement.addEventListener('submit', handleFormSubmit);
 const saveProfileButton = formElement.querySelector('.popup__button');
 closeModal(saveProfileButton);
 
-
-
-
-
-
-
-
-/*
-openEditButton.addEventListener('click', function (event) {
-  popupEdit.setAttribute('style',
-  `display: flex;
-  visibility: visible;
-  opacity: 1;
-  pointer-events: all;
-  transition: visibility 0s, opacity 0.6s;`);
-});
-
-openAddButton.addEventListener('click', function (event) {
-  popupAdd.setAttribute('style',
-  `display: flex;
-  visibility: visible;
-  opacity: 1;
-  pointer-events: all;
-  transition: visibility 0s, opacity 0.6s;`);
-});
-
-*/
