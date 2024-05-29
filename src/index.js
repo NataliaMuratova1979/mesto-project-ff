@@ -15,8 +15,8 @@ const openAddButton = document.querySelector('.profile__add-button'); //кноп
 function openPopupWindow(button, window) {
   button.addEventListener('click', function (event) {
     window.classList.add("popup_is-opened");
-    closeModalByOverlay(window);
   });
+  closeModalByOverlay(window);
 }
 
 openPopupWindow(openEditButton, popupEdit);
