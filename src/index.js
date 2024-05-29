@@ -1,8 +1,11 @@
 import './pages/index.css'; 
 import { initialCards } from './scripts/cards.js';
+import {   } from './scripts/card.js';
+import {   } from './scripts/modal.js';
+
+
 
 const popup = document.querySelector('.popup');  
-
 
 //-----------------------------функция открытия попапа - modal.js --------------------------------------//
 
@@ -29,6 +32,7 @@ let closePopupButtons = document.querySelectorAll('.popup__close'); //масси
 closePopupButtons.forEach(closeModal);
 
 // ---------------- функция закрытия модального окна по кнопке - modal.js ---------------- //
+// function closeModal
 
 function closeModal(button)  {
   button.addEventListener('click', function (event) { 
@@ -42,7 +46,7 @@ function closeModal(button)  {
 }
 
 // ---------------- функция закрытия модального окна по оверлею - modal.js ---------------- //
-// функция вызывается в коде на строке 18 (для модальных окон редактирования) и строке 133 (для попапа большой картинки)
+// function closeWindow closeModalByOverlay
 
 function closeWindow(window) {
   window.classList.remove('popup_is-opened');
@@ -52,33 +56,25 @@ function closeModalByOverlay(popupToClose) {
 
   popupToClose.addEventListener('click', event => {
 
-  console.log ('проверка');
-
   if(event.target === event.currentTarget) {
-    console.log(event.target);
-    console.log('в чем разница');
-    console.log(event.currentTarget);
-
     closeWindow(popupToClose);
   }
 });
 };
 
-
 // ---------------- функция закрытия модального окна по esc - modal.js ---------------- //
+// function closeModalByEsc
 
 function closeModalByEsc(popupToClose) {
-  popup.addEventListener('keydown', function(e) {   
-
-  if(e.key === 27 ) {
-  closeWindow(popupToClose);
-  popup.removeEventListener;
-  }
-});
+  document.addEventListener('keydown', event => {
+    if (event.key === "Escape")  closeWindow(popupToClose);
+  });
+  document.removeEventListener('keydown', closeWindow);
 };
 
-// ------------------------ функция создания карточки card.js------------------------// 
 
+// ------------------------ функция создания карточки card.js------------------------// 
+// function makeCard
 
 function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack) { //при добавлении карточки cardElement = элемент массива, deleteCallBack = deleteCard
 
@@ -117,13 +113,19 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack) 
 
 // ----------------- Функции - колбэки ----------------- //
 
+// deleteCard - card.js
+
 function deleteCard(item) { //deleteCard => deleteCallBack при объявлении addCard card.js
    item.remove(); //убираем карточку
 }
 
+// activeLikeButton - card.js
+
 function activeLikeButton(button) { // activeLikeButton => likeCallBack при объявлении addCard card.js
   button.classList.add('card__like-button_is-active');
 };
+
+// openPopup - modal.js
 
 function openPopup(cardElement) { // openPopup => openPopupCallBack при объявлении addCard modal.js
 
@@ -142,6 +144,7 @@ function openPopup(cardElement) { // openPopup => openPopupCallBack при об�
 };  
 
 // --------------- Создаем новую карточку card.js ---------------- //
+// function makeNewCardData, обработчик formElementPlace, обработчик savePlaceButton
 
 const placePopup = document.querySelector('.popup_type_new-card');
 
@@ -154,7 +157,6 @@ let arrayToAdd = initialCards;
 
 const placeInput = formElementPlace.querySelector('.popup__input_type_card-name');
 const linkInput = formElementPlace.querySelector('.popup__input_type_url');
-
   
 function makeNewCardData(evt) { // функция добавления карточки 
   evt.preventDefault();
@@ -183,6 +185,7 @@ savePlaceButton.addEventListener('click', function (event) { // закрывае
   placePopup.classList.add('popup_is-animated');
 });
 
+
 // -------------- Добавляем карточки на страницу index.js---------------- //
 
 const placesList = document.querySelector('.places__list'); // был внутри функции addCard
@@ -200,7 +203,6 @@ function addCard(cardArray) {
 
 addCard(initialCards);
 
-
 // --------------- Редактируем профиль - index.js ---------------- //
 
 const formElement = document.forms[0]; // это первая форма в документе
@@ -217,4 +219,3 @@ function handleFormSubmit(evt) {
 formElement.addEventListener('submit', handleFormSubmit);
 const saveProfileButton = formElement.querySelector('.popup__button');
 closeModal(saveProfileButton);
-
