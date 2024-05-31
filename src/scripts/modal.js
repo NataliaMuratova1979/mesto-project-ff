@@ -1,13 +1,35 @@
-export { openPopupWindow, closeModal, closeWindow, closeModalByOverlay, closeModalByEsc, openPopup };
+export { openPopupWindow, closeModal, closeWindow, closeModalByOverlay, closeModalByEsc, addPopupOpened, addPopupAnimated };
 
-const popup = document.querySelector('.popup');  
+const popup = document.querySelector('.popup'); 
 
-//-----------------------------функция открытия попапа --------------------------------------//
+//----------------------------- функция добавления класса popup_is-opened -----------------------------//
+
+function addPopupOpened(popup) {
+    popup.classList.add('popup_is-opened');
+    document.addEventListener('keydown', closeModalByEsc); 
+}
+
+//----------------------------- функция удаления класса popup_is-opened -----------------------------//
+
+function removePopupOpened(popup) {
+    popup.classList.remove('popup_is-opened');
+    document.removeEventListener('keydown', closeModalByEsc);
+} 
+
+//----------------------------- функция добавления класса popup_is-animated -----------------------------//
+
+function addPopupAnimated(popup) {
+    popup.classList.add('popup_is-animated');
+    //навесить обработчик
+}
+
+//-----------------------------функция открытия попапа по кнопке--------------------------------------//
 
 function openPopupWindow(button, window) {
   button.addEventListener('click', function (event) {
-    window.classList.add("popup_is-opened");
+    addPopupOpened(window);
   });
+
   closeModalByOverlay(window); // функция закрытия по оверлею
   closeModalByEsc(window); // функция закрытия по кнопке esc
 }
@@ -22,10 +44,10 @@ closePopupButtons.forEach(closeModal);
 function closeModal(button)  {
   button.addEventListener('click', function (event) { 
 
-    let popupToClose = button.closest('div.popup');
+    const popupToClose = button.closest('div.popup');
 
-    popupToClose.classList.remove('popup_is-opened');
-    popupToClose.classList.add('popup_is-animated');
+    removePopupOpened(popupToClose);
+    addPopupAnimated(popupToClose);
   });
 }
 
@@ -38,37 +60,18 @@ function closeWindow(window) {
 function closeModalByOverlay(popupToClose) {
   popupToClose.addEventListener('click', event => {
   if(event.target === event.currentTarget) {
-    closeWindow(popupToClose);
+    removePopupOpened(popupToClose);
   }
 });
-};
+}
 
 // ---------------- функция закрытия модального окна по esc ---------------- //
 
-function closeModalByEsc(popupToClose) {
-  document.addEventListener('keydown', event => {
-    if (event.key === "Escape")  closeWindow(popupToClose);
-  });
-  document.removeEventListener('keydown', closeWindow);
-};
+function closeModalByEsc(evt) { 
+    const openedPopup = document.querySelector('.popup_is-opened');
+    //const key = event.keyCode; 
+    if (evt.key === 'Escape') removePopupOpened(openedPopup);
+    }
 
-
-
-
-
-function openPopup(cardElement) { // openPopup => openPopupCallBack при объявлении addCard modal.js
-
-    const popupImageWindow = document.querySelector('.popup_type_image'); // модальное окно
-    const popupImageContent = popupImageWindow.querySelector('.popup__content_content_image');
-    const popupImagePicture = popupImageContent.querySelector('.popup__image');
-    const popupImageText = popupImageContent.querySelector('.popup__caption');
-    
-    popupImagePicture.src = cardElement.link; //картинка модального окна - элемент массива
-    popupImageText.textContent = cardElement.name; // текст - элемент массива 
-  
-  popupImageWindow.classList.add('popup_is-opened');
-  
-  closeModalByOverlay(popupImageWindow); //функция закрытия по оверлею 
-  closeModalByEsc(popupImageWindow); //функция закрытия по кнопке esc
-  };  
+console.log('все');
 
