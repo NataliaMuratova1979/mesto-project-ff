@@ -1,10 +1,10 @@
-export { openPopupWindow, closeModal, closeModalByOverlay, closeModalByEsc, addPopupOpened, addPopupAnimated, removePopupOpened };
+export { openPopupWindow, closeModal, addPopupOpened, addPopupAnimated, removePopupOpened };
 
 //----------------------------- функция добавления класса popup_is-opened -----------------------------//
 
 function addPopupOpened(popup) {
     popup.classList.add('popup_is-opened');
-    document.addEventListener('click', closeModalByOverlay);
+    popup.addEventListener('click', closeModalByOverlay);
     document.addEventListener('keydown', closeModalByEsc); 
 }
 
@@ -12,7 +12,7 @@ function addPopupOpened(popup) {
 
 function removePopupOpened(popup) {
     popup.classList.remove('popup_is-opened');
-    document.removeEventListener('click', closeModalByOverlay);
+    popup.removeEventListener('click', closeModalByOverlay);
     document.removeEventListener('keydown', closeModalByEsc);
 } 
 
@@ -43,17 +43,6 @@ function closeModal(button)  {
 
 // ---------------- функция закрытия модального окна по оверлею ---------------- //
 
-
-/* 
-function closeModalByOverlay(popupToClose) {
-  popupToClose.addEventListener('click', event => {
-  if (event.target === event.currentTarget) {
-    removePopupOpened(popupToClose);
-  }
-});
-}
-*/
-
 function closeModalByOverlay(evt) {
   if (evt.target === evt.currentTarget) {
     const popupToClose = document.querySelector('.popup_is-opened');
@@ -67,7 +56,7 @@ function closeModalByEsc(evt) {
     if (evt.key === 'Escape') { 
       const openedPopup = document.querySelector('.popup_is-opened');
       removePopupOpened(openedPopup);
-    } 
-    }
+  } 
+}
 
 console.log('все');

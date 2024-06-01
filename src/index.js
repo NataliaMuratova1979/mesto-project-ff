@@ -1,7 +1,7 @@
 import './pages/index.css'; 
 import { initialCards } from './scripts/cards.js';
 import { makeCard, deleteCard, activeLikeButton } from './scripts/card.js';
-import { openPopupWindow, closeModal, closeModalByOverlay, closeModalByEsc, addPopupOpened, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
+import { openPopupWindow, closeModal, addPopupOpened, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
 
 // -------------- Константы элементов DOM -------------- //
 
@@ -103,10 +103,5 @@ function openImagePopup(cardElement) { // openPopup - openImagePopup => openPopu
 
   addPopupOpened(popupImageWindow);
   addPopupAnimated(popupImageWindow);
-
-  //closeModalByOverlay(popupImageWindow); //функция закрытия по оверлею 
-  //closeModalByEsc(popupImageWindow); //функция закрытия по кнопке esc
 }
 
-const popupToClose = document.querySelector('.popup_is-opened');
-const openedPopup = document.querySelector('.popup_is-opened');
