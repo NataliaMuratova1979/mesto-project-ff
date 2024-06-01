@@ -1,7 +1,7 @@
 import './pages/index.css'; 
 import { initialCards } from './scripts/cards.js';
 import { makeCard, deleteCard, activeLikeButton } from './scripts/card.js';
-import { openPopupWindow, closeModal, closeWindow, closeModalByOverlay, closeModalByEsc, addPopupOpened, addPopupAnimated } from './scripts/modal.js';
+import { openPopupWindow, closeModal, closeModalByOverlay, closeModalByEsc, addPopupOpened, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
 
 // -------------- Константы элементов DOM -------------- //
 
@@ -30,6 +30,8 @@ const popupImageText = popupImageContent.querySelector('.popup__caption');
 const openEditButton = document.querySelector('.profile__edit-button'); //кнопка открытия окна редактирования профиля
 const openAddButton = document.querySelector('.profile__add-button'); //кнопка открытия окна добавления карточки
 
+const closePopupButtons = document.querySelectorAll('.popup__close'); //массив кнопки закрытия модального окна
+closePopupButtons.forEach(closeModal);
 
 // -------------- Отображение шести карточек при открытии страницы ---------------- //
 
@@ -55,7 +57,7 @@ function handleFormSubmit(evt) {
   profileTitle.textContent = nameInput.value;  
   profileDescription.textContent = jobInput.value; 
 
-  profilePopup.classList.remove('popup_is-opened');
+  removePopupOpened(profilePopup);
 }
 
 formElement.addEventListener('submit', handleFormSubmit);
@@ -81,7 +83,9 @@ function makeNewCardData(evt) { // функция добавления карт�
 
 formElementPlace.addEventListener('submit', makeNewCardData); 
 savePlaceButton.addEventListener('click', function (event) { // закрываем попап по кнопке Сохранить
-  placePopup.classList.remove('popup_is-opened');
+
+  removePopupOpened(placePopup);
+
 });
 
 // ------------------ Вызываем функции открытия попапа по кнопке ------------------ //
@@ -100,6 +104,9 @@ function openImagePopup(cardElement) { // openPopup - openImagePopup => openPopu
   addPopupOpened(popupImageWindow);
   addPopupAnimated(popupImageWindow);
 
-  closeModalByOverlay(popupImageWindow); //функция закрытия по оверлею 
-  closeModalByEsc(popupImageWindow); //функция закрытия по кнопке esc
+  //closeModalByOverlay(popupImageWindow); //функция закрытия по оверлею 
+  //closeModalByEsc(popupImageWindow); //функция закрытия по кнопке esc
 }
+
+const popupToClose = document.querySelector('.popup_is-opened');
+const openedPopup = document.querySelector('.popup_is-opened');
