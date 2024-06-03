@@ -1,7 +1,7 @@
 import './pages/index.css'; 
 import { initialCards } from './scripts/cards.js';
 import { makeCard, deleteCard, activeLikeButton } from './scripts/card.js';
-import { openPopupWindow, closeModal, addPopupOpened, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
+import { openPopupWindow, addPopupOpened, closeModal, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
 
 // -------------- Константы элементов DOM -------------- //
 
@@ -72,21 +72,16 @@ function makeNewCardData(evt) { // функция добавления карт�
   newCardData.name = placeInput.value;
   newCardData.link = linkInput.value;
 
-  let cardToInsert = makeCard(newCardData, deleteCard, activeLikeButton, openImagePopup);
+  const cardToInsert = makeCard(newCardData, deleteCard, activeLikeButton, openImagePopup);
 
   placesList.prepend(cardToInsert); // добавляем карточку на страницу в начало контейнера
 
   evt.target.reset();
 
-  closeModal(savePlaceButton);
+  removePopupOpened(placePopup);
 }
 
 formElementPlace.addEventListener('submit', makeNewCardData); 
-savePlaceButton.addEventListener('click', function (event) { // закрываем попап по кнопке Сохранить
-
-  removePopupOpened(placePopup);
-
-});
 
 // ------------------ Вызываем функции открытия попапа по кнопке ------------------ //
 
