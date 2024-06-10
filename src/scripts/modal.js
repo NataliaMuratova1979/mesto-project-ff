@@ -64,4 +64,10 @@ function closeModalByEsc(evt) {
   } 
 }
 
+
+
+
+
+
+
 console.log('все');
