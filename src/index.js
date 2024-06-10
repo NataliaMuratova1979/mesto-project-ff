@@ -1,7 +1,7 @@
 import './pages/index.css'; 
 import { initialCards } from './scripts/cards.js';
 import { makeCard, deleteCard, activeLikeButton } from './scripts/card.js';
-import { openPopupWindow, addPopupOpened, closeModal, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
+import { /*openPopupWindow,*/ addPopupOpened, closeModal, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
 
 // -------------- Константы элементов DOM -------------- //
 
@@ -52,12 +52,14 @@ addCard(initialCards);
 
 addPopupAnimated(profilePopup);
 
-function handleFormSubmit(evt) {
+function handleFormSubmit(evt) {// функция редактирования профиля
+
   evt.preventDefault();
   profileTitle.textContent = nameInput.value;  
   profileDescription.textContent = jobInput.value; 
 
   removePopupOpened(profilePopup);
+ 
 }
 
 formElement.addEventListener('submit', handleFormSubmit);
@@ -76,7 +78,7 @@ function makeNewCardData(evt) { // функция добавления карт�
 
   placesList.prepend(cardToInsert); // добавляем карточку на страницу в начало контейнера
 
-  evt.target.reset();
+  evt.target.reset(); 
 
   removePopupOpened(placePopup);
 }
@@ -85,8 +87,24 @@ formElementPlace.addEventListener('submit', makeNewCardData);
 
 // ------------------ Вызываем функции открытия попапа по кнопке ------------------ //
 
-openPopupWindow(openEditButton, profilePopup);
-openPopupWindow(openAddButton, placePopup);
+/*
+openPopupWindow(openEditButton, profilePopup, clearValidation);
+openPopupWindow(openAddButton, placePopup, clearValidation);
+*/
+
+openEditButton.addEventListener('click', function (event) {
+  addPopupOpened(profilePopup);
+  clearValidation(formElement);
+});
+
+openAddButton.addEventListener('click', function (event) {
+  addPopupOpened(placePopup);
+  clearValidation(formElementPlace);
+});
+
+
+
+
 
 //------------------ Функция отрытия большой картинки ------------------ //
 
@@ -107,7 +125,7 @@ function openImagePopup(cardElement) { // openPopup - openImagePopup => openPopu
 
 function showInputError(formSelector, inputSelector, errorMessage) {
   
-  const errorElement = formSelector.querySelector(`.${inputSelector.id}-error`); 
+  const errorElement = formSelector.querySelector(`.${inputSelector.id}-error`); // находим span c классом как в input concat -error
   
   // находим элемент ошибки внутри самой функции
   
@@ -126,12 +144,13 @@ function hideInputError(formSelector, inputSelector) {
   errorElement.textContent = ''; // убираем сообщение об ошибке
 };
 
+
+
 // formSelector: '.popup__form'  - html-элемент форма
 // inputSelector: '.popup__input' - html-элемент поле ввода 
 // функция получает параметром форму, в которой находится проверяемое поле, и это само поле - проверяемое поле ввода
 
 function checkInputValidity(formSelector, inputSelector) { //не проверено 
-  // сначала надо как-то вызвать очистку формы 
 
   if (inputSelector.validity.patternMismatch) { // не проверено
     inputSelector.setCustomValidity(inputSelector.dataset.errorMessage);
@@ -176,6 +195,7 @@ function setEventListeners(formSelector) {
 
   const inputList = Array.from(formSelector.querySelectorAll('.popup__input'));
   console.log(inputList);
+  console.log('тут работает');
   const buttonElement = formSelector.querySelector('.popup__button');
 
   toggleButtonState(inputList, buttonElement); // блокируем кнопку с самого начала
@@ -191,8 +211,6 @@ function setEventListeners(formSelector) {
   });
 };
 
-
-
 // Добавление обработчиков всем формам
 
 function enableValidation() {
@@ -205,26 +223,24 @@ function enableValidation() {
 
 enableValidation();
 
+// -------------------- функция очистки ошибок валидации -------------------- //
 
-//clearValidation(someForm, validationConfig);
+function clearValidation(formToClear) { 
 
-/*
-function clearValidation(someForm, validationConfig) {
-
-  const inputList = Array.from(someForm.querySelectorAll('.popup__input'));
-  const buttonElement = someForm.querySelector('.popup__button');
-
-
-  const validationConfig = (inputList, buttonElement) => {
-    if (hasInvalidInput(inputList)) {
-          buttonElement.disabled = true;
-        buttonElement.classList.add('popup__button_disabled');
-    } else { 
-          buttonElement.disabled = false;
-        buttonElement.classList.remove('popup__button_disabled');
-    }
-  };
+  console.log(formToClear);
   
-}
+  const inputsToClear = Array.from(formToClear.querySelectorAll('.popup__input'));
+  console.log(inputsToClear);
 
-*/
+  const buttonToUnactive = formToClear.querySelector('.popup__button');
+
+  inputsToClear.forEach((inputToClear) => {
+    
+    hideInputError(formToClear, inputToClear);
+
+  });
+
+  buttonToUnactive.classList.add('popup__button_disabled');
+
+};
+

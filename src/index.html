@@ -45,19 +45,21 @@
         placeholder="Имя" 
         minlength="2" 
         maxlength="40"
-        pattern="^[a-zA-Z]"
-        data-error-message="Введите русские или латинские буквы, можно через пробел или дефис"
+        pattern="\s[a-zA-Zа-яёА-ЯЁ-]"
+        data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы."
         required> 
-        <span class="popup__input-error name-input-error"></span>
+        <span class="name-input-error"></span>
         <input type="text" 
         name="description" 
         id="description-input" 
         class="popup__input popup__input_type_description" 
         placeholder="Занятие" 
         minlength="2" 
-        maxlength="200" 
+        maxlength="200"
+        pattern="\s[a-zA-Zа-яёА-ЯЁ-]"
+        data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы."
         required>
-        <span class="popup__input-error description-input-error"></span>
+        <span class="description-input-error"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
@@ -74,15 +76,17 @@
         placeholder="Название" 
         minlength="2" 
         maxlength="30" 
+        pattern="\s[a-zA-Zа-яёА-ЯЁ-]"
+        data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы."
         required>
-        <span class="popup__input-error place-name-input-error"></span>
+        <span class="place-name-input-error"></span>
         <input type="url" 
         name="link" 
         id="link-input" 
         class="popup__input popup__input_type_url" 
         placeholder="Ссылка на картинку" 
         required>
-        <span class="popup__input-error link-input-error"></span>
+        <span class="link-input-error"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>

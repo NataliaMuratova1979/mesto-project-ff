@@ -1,4 +1,4 @@
-export { openPopupWindow, closeModal, addPopupOpened, addPopupAnimated, removePopupOpened };
+export { /*openPopupWindow,*/ closeModal, addPopupOpened, addPopupAnimated, removePopupOpened };
 
 //----------------------------- функция добавления класса popup_is-opened -----------------------------//
 
@@ -25,11 +25,16 @@ function addPopupAnimated(popup) {
 
 //-----------------------------функция открытия попапа по кнопке--------------------------------------//
 
-function openPopupWindow(button, window) {
+/*
+function openPopupWindow(button, window, clearValidation) {
+
   button.addEventListener('click', function (event) {
     addPopupOpened(window);
+    clearValidation(window);
   });
 }
+*/
+
 
 // ---------------- функция закрытия модального окна по кнопке  ---------------- //
 
