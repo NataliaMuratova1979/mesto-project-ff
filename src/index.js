@@ -47,7 +47,7 @@ function addCard(cardArray) {
   });
 }    
 
-addCard(initialCards);
+//addCard(initialCards);
 
 // --------------- Вводим данные в форму редактирования профиля  ---------------- //
 
@@ -133,7 +133,7 @@ const profileImage = document.querySelector('.profile__image');
 //const profileDescription = document.querySelector('.profile__description'); 
 
 
-
+//---------------- Загрузка информации о пользователе с сервера ----------------//
 
 function updateUser() {
   fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
@@ -152,6 +152,8 @@ function updateUser() {
 }
 
 updateUser();
+
+//---------------- Загрузка карточек с сервера ----------------//
 
 function updateCards() {
   return fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
@@ -191,5 +193,35 @@ function updateCards() {
 
 updateCards();
 
+Promise.all([updateUser, updateCards]).then((values) => {
+  console.log(values);
+});
 
+//---------------- Редактирование профиля ----------------//
+
+fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
+  method: 'PATCH',
+  headers: {
+    authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Marie Skłodowska Curie',
+    about: 'Physicist and Chemist'
+  })
+}); 
+
+//---------------- Добавление новой карточки ----------------//
+
+fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
+  method: 'POST',
+  headers: {
+    authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: ,
+    link: 
+  })
+}); 
 
