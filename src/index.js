@@ -219,7 +219,6 @@ function saveUserToServer(newUser) {  // функция редактирован
   
 }
 
-console.log('щас будет функция');
 
 formElement.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
 
@@ -239,29 +238,55 @@ formElement.addEventListener('submit', function(event) { // отправляем
 });
   
 
+//---------------- Добавление карточки на сервер ----------------//
 
+console.log('добавляем карточку');
 
+function saveCardToServer(newCard) {  // функция редактирования профиля на сервере
+  fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
 
+    method: 'POST',
+    headers: {
+      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(newCard),
+    })
 
-
-
-
-
-
-//---------------- Добавление новой карточки ----------------//
-/*
-function() {
-
-fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
-  method: 'POST',
-  headers: {
-    authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    name: placeInput.value,
-    link: linkInput.value
-  })
-}); 
+    .then(res => res.json())
+    .then(res => console.log(res))
 }
+
+/*
+https://kartinki.pics/pics/uploads/posts/2022-07/1658442329_22-kartinkin-net-p-zaitsi-v-petropavlovskoi-kreposti-zhivotni-23.jpg
 */
+
+formElementPlace.addEventListener('submit', function(event) { 
+
+  event.preventDefault();
+
+  const placeInput = formElementPlace.querySelector('.popup__input_type_card-name');
+  const linkInput = formElementPlace.querySelector('.popup__input_type_url');
+
+  const newCardData = new Object();    
+
+  newCardData.name = placeInput.value;
+  newCardData.link = linkInput.value;
+
+  console.log("new");
+  console.log(newCardData);
+  console.log("new");
+
+  console.log(placeInput.value);
+  console.log(linkInput.value);
+  
+  const newCardFromInput = {
+    "name": placeInput.value,
+    "link": linkInput.value
+  };
+
+  saveCardToServer(newCardFromInput);
+
+  console.log('все работает');
+
+});
