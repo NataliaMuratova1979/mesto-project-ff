@@ -95,8 +95,12 @@ openEditButton.addEventListener('click', function (event) {
   clearValidation(formElement); 
   addPopupOpened(profilePopup);
 
-  nameInput.value = profileTitle.textContent;
-  jobInput.value = profileDescription.textContent;
+  //nameInput.value = profileTitle.textContent;
+  //jobInput.value = profileDescription.textContent;
+  //update placeholder
+
+  nameInput.placeholder = profileTitle.textContent;
+  jobInput.placeholder = profileDescription.textContent;
 
  });
 
@@ -135,8 +139,8 @@ const profileImage = document.querySelector('.profile__image');
 
 //---------------- Загрузка информации о пользователе с сервера ----------------//
 
-function updateUser() {
-  fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
+function updateUserFromServer() {
+  return fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
     headers: {
       authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8'
     }
@@ -150,12 +154,11 @@ function updateUser() {
       profileImage.link = data.avatar;
     });
 }
-
-updateUser();
+updateUserFromServer();
 
 //---------------- Загрузка карточек с сервера ----------------//
 
-function updateCards() {
+function updateCardsFromServer() {
   return fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
     headers: {
       authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8'
@@ -190,28 +193,64 @@ function updateCards() {
        
     });
 }
+updateCardsFromServer();
 
-updateCards();
-
-Promise.all([updateUser, updateCards]).then((values) => {
+Promise.all([updateUserFromServer, updateCardsFromServer]).then((values) => {
   console.log(values);
 });
 
-//---------------- Редактирование профиля ----------------//
+//---------------- Редактирование профиля на сервере ----------------//
 
-fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
-  method: 'PATCH',
-  headers: {
-    authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    name: 'Marie Skłodowska Curie',
-    about: 'Physicist and Chemist'
-  })
-}); 
+console.log('редактируем профиль');
+
+function saveUserToServer(newUser) {  // функция редактирования профиля на сервере
+  fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
+
+    method: 'PATCH',
+    headers: {
+      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(newUser),
+    })
+
+    .then(res => res.json())
+    .then(res => console.log(res))
+  
+}
+
+console.log('щас будет функция');
+
+formElement.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
+
+  event.preventDefault();
+
+  const newUserFromInput = {
+    "name": nameInput.value,
+    "about": jobInput.value
+  };
+
+  console.log(newUserFromInput);
+
+  saveUserToServer(newUserFromInput);
+
+  console.log('все работает');
+
+});
+  
+
+
+
+
+
+
+
+
+
 
 //---------------- Добавление новой карточки ----------------//
+/*
+function() {
 
 fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
   method: 'POST',
@@ -220,8 +259,9 @@ fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    name: ,
-    link: 
+    name: placeInput.value,
+    link: linkInput.value
   })
 }); 
-
+}
+*/
