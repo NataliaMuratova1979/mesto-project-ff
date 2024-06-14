@@ -76,12 +76,16 @@ function makeNewCardData(evt) { // функция добавления карт�
 
   const cardToInsert = makeCard(newCardData, deleteCard, activeLikeButton, openImagePopup);
 
+
+
   placesList.prepend(cardToInsert); // добавляем карточку на страницу в начало контейнера
 
   const newCardFromInput = {
     "name": placeInput.value,
-    "link": linkInput.value
+    "link": linkInput.value,
+    "owner": "моя"
   };
+
 
   saveCardToServer(newCardFromInput);
  
@@ -212,12 +216,6 @@ function updateCardsFromServer() {
 }
 updateCardsFromServer();
 
-function displayNone(object) {
-  object.classList.add('invisible');
-}
-
-
-
 
 Promise.all([updateUserFromServer, updateCardsFromServer]).then((values) => {
   console.log(values);
@@ -243,15 +241,14 @@ function saveUserToServer(newUser) {  // функция редактирован
   
 }
 
-
 formElement.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
 
   event.preventDefault();
 
   const newUserFromInput = {
     "name": nameInput.value,
-    "about": jobInput.value
-  };
+    "about": jobInput.value,
+  }
 
   console.log(newUserFromInput);
 
