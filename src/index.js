@@ -1,5 +1,5 @@
 import './pages/index.css'; 
-import { initialCards } from './scripts/cards.js';
+//import { initialCards } from './scripts/cards.js';
 import { makeCard, deleteCard, activeLikeButton } from './scripts/card.js';
 import { /*openPopupWindow,*/ addPopupOpened, closeModal, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
@@ -78,10 +78,18 @@ function makeNewCardData(evt) { // функция добавления карт�
 
   placesList.prepend(cardToInsert); // добавляем карточку на страницу в начало контейнера
 
+  const newCardFromInput = {
+    "name": placeInput.value,
+    "link": linkInput.value
+  };
+
+  saveCardToServer(newCardFromInput);
+ 
   evt.target.reset(); 
 
   removePopupOpened(placePopup);
 }
+
 
 formElementPlace.addEventListener('submit', makeNewCardData); 
 
@@ -130,7 +138,6 @@ enableValidation();
 */
 
 
-
 /*const profile__image background-image url */
 const profileImage = document.querySelector('.profile__image');
 //const profileTitle = document.querySelector('.profile__title');
@@ -154,6 +161,7 @@ function updateUserFromServer() {
       profileImage.link = data.avatar;
     });
 }
+
 updateUserFromServer();
 
 //---------------- Загрузка карточек с сервера ----------------//
@@ -171,7 +179,11 @@ function updateCardsFromServer() {
 
       console.log('данные') 
       console.log(data);
-      console.log(data[0]);
+      console.log(data[9]);
+
+      console.log('ВЫВОДИМ В КОНСОЛЬ ХОЗЯИНА');
+      console.log(data[0].owner._id);
+      //bfce420205a3f0b794236539 - мой id
 
       const newArray = data;
 
@@ -188,12 +200,24 @@ function updateCardsFromServer() {
 
       console.log('функция');
       console.log(addCard);
+      
+      console.log('ЕЩЕ РАЗ ВЫВОДИМ В КОНСОЛЬ ХОЗЯИНА');
 
-      addCard(newArray);    
-       
+      newArray.forEach((data) => {
+        console.log(data.owner._id);
+      });
+
+      addCard(newArray);           
     });
 }
 updateCardsFromServer();
+
+function displayNone(object) {
+  object.classList.add('invisible');
+}
+
+
+
 
 Promise.all([updateUserFromServer, updateCardsFromServer]).then((values) => {
   console.log(values);
@@ -261,32 +285,7 @@ function saveCardToServer(newCard) {  // функция редактирован
 https://kartinki.pics/pics/uploads/posts/2022-07/1658442329_22-kartinkin-net-p-zaitsi-v-petropavlovskoi-kreposti-zhivotni-23.jpg
 */
 
-formElementPlace.addEventListener('submit', function(event) { 
+// ------------- Убираем иконку удаления карточек ------------- //
 
-  event.preventDefault();
 
-  const placeInput = formElementPlace.querySelector('.popup__input_type_card-name');
-  const linkInput = formElementPlace.querySelector('.popup__input_type_url');
 
-  const newCardData = new Object();    
-
-  newCardData.name = placeInput.value;
-  newCardData.link = linkInput.value;
-
-  console.log("new");
-  console.log(newCardData);
-  console.log("new");
-
-  console.log(placeInput.value);
-  console.log(linkInput.value);
-  
-  const newCardFromInput = {
-    "name": placeInput.value,
-    "link": linkInput.value
-  };
-
-  saveCardToServer(newCardFromInput);
-
-  console.log('все работает');
-
-});
