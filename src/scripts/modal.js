@@ -63,11 +63,3 @@ function closeModalByEsc(evt) {
       removePopupOpened(openedPopup);
   } 
 }
-
-
-
-
-
-
-
-console.log('все');

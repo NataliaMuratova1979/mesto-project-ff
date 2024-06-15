@@ -13,31 +13,11 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack) 
     placesItem.querySelector('.card__image').src = cardElement.link; //элемент массива
     placesItem.querySelector('.card__image').alt = cardElement.name; //элемент массива
 
-    // const deleteButton = placesItem.querySelector('.card__delete-button'); // назначаем кнопку удаления
-   
-    console.log('1');
-    console.log(cardElement);
-    console.log('2'); // работает
-    
-    console.log(cardElement.owner);
-    console.log('3'); // работает
-    console.log(cardElement.owner._id);
-    console.log('4'); // работает
-
-
-
-
-
-
-
-
-
-
     // функция колбэк - удаление карточки
-  
+
     const deleteButton = placesItem.querySelector('.card__delete-button'); // назначаем кнопку удаления 
     deleteButton.addEventListener('click', () => { // по нажатию на кнопку запускается колбэк
-        deleteCallBack(placesItem); // 
+      deleteCallBack(placesItem); // 
     }); 
 
     // функция колбэк - лайк картинки 
@@ -53,14 +33,8 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack) 
     popupImageButton.addEventListener('click', () => { // по нажатию на картинку запускается колбэк
       openPopupCallBack(cardElement);
     });  
+ 
 
-    
-    if (cardElement.owner._id !== '0831699e8c089d4fe917fe41') {
-      console.log(cardElement.owner.name); 
-      console.log("ПОЛУЧИЛОСЬ");
-      makeInvisible(deleteButton);
-    };
-    
     // выводим карточки на страницу
 
     return placesItem;
@@ -76,7 +50,5 @@ function activeLikeButton(button) { // activeLikeButton => likeCallBack при �
   button.classList.add('card__like-button_is-active');
 };
 
-function makeInvisible(item) {
-  item.classList.add('invisible');
-}
+
 
