@@ -56,24 +56,28 @@ function activeLike(button, data, user) { // activeLikeButton => likeCallBack п
     console.log(data.likes.length);
     console.log(arr.length);
     if (arr.length === 0) {
-      console.log('лайков нет');      
+      button.classList.add('card__like-button_is-active');
+      putLIkeOnServer(data);       
     }
     console.log(user);
-   
+    console.log('ниж е');
+   // console.log(arr[0]._id);
+    console.log('dsit'); 
 
 
-
+/*
     for (let i = 0; i < arr.length; i++) {
-      if (arr[i] !== user) {
+      if (arr[i]._id !== user) {
         console.log('nouser');
+        button.classList.add('card__like-button_is-active');
+        putLIkeOnServer(data);      
+      } else {
+        console.log('user');    
+
         button.classList.remove('card__like-button_is-active');
         removeLikeFromServer(data);
-      } else {
-        console.log('user');
-        button.classList.add('card__like-button_is-active');
-        putLIkeOnServer(data);
       }
-    }
+    }*/
 }
 
   //removeLikeFromServer(data);

@@ -54,6 +54,7 @@ function addCard(cardArray, userId) {
     console.log(data);
     console.log(data.likes);
     console.log(data.likes[0]);
+
     console.log('^');
 
     console.log(userId);
@@ -73,6 +74,16 @@ function addCard(cardArray, userId) {
     const cardLikeCount = card.querySelector('.card__like-count');
     cardLikeCount.innerHTML = likesNumber;
 
+    // ------ закрашиваем сердечко у лайкнутой карточки ------- //
+
+    const cardLikeButton = card.querySelector('.card__like-button');
+    for (let i = 0; i < data.likes.length; i++) {
+      if (data.likes[i]._id === userId) {
+        console.log('я лайкнула');
+        cardLikeButton.classList.add('card__like-button_is-active');
+      } 
+    }
+  
     placesList.append(card); 
   });
    // ---------------- добавляем карточку ---------------- //
