@@ -4,6 +4,8 @@ import { makeCard, deleteCard, activeLikeButton } from './scripts/card.js';
 import { /*openPopupWindow,*/ addPopupOpened, closeModal, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
 
+//import { deleteCardFromServer } from './scripts/api.js';
+
 
 // -------------- Константы элементов DOM -------------- //
 
@@ -49,18 +51,23 @@ function addCard(cardArray, userId) {
     const card = makeCard(data, deleteCard, activeLikeButton, openImagePopup); //подставляем data в функцию makeCard
     console.log(data);
     console.log(data.owner._id);
-    const cardOwnerId = data.owner._id;
-    console.log(cardOwnerId);
+    console.log(data._id);
   
-    console.log('2y');
-    console.log(userId);
-    console.log('2');
-
+    console.log('v');
+    console.log(data._id);
+    console.log('получили айди карточки');
+    console.log('^');
 
     console.log(card); 
 
+    // ------- убираем иконку корзинки с чужих карточек ------- //
+
     const deleteButton = card.querySelector('.card__delete-button');
     console.log(deleteButton);
+    const cardOwnerId = data.owner._id;
+    if (cardOwnerId !== userId) { 
+      deleteButton.classList.add('invisible');
+    };
 
     // ------- отображаем количество лайков карточки ------- //
 
@@ -68,13 +75,9 @@ function addCard(cardArray, userId) {
     const cardLikeCount = card.querySelector('.card__like-count');
     cardLikeCount.innerHTML = likesNumber;
 
-    placesList.append(card);
+    placesList.append(card); // добавляем карточку
   });
 }    
-
-
-
-//addCard(initialCards);
 
 // --------------- Вводим данные в форму редактирования профиля  ---------------- //
 
@@ -203,6 +206,11 @@ function updateCardsFromServer() {
 updateCardsFromServer();
 
 
+
+
+
+
+
 // --------------- ПРОМИС --------------- //
 
 Promise.all([updateUserFromServer(), updateCardsFromServer()])
@@ -215,7 +223,6 @@ Promise.all([updateUserFromServer(), updateCardsFromServer()])
     profileDescription.textContent = userData.about;
     profileImage.link = userData.avatar;
 
-    console.log(userData);    
     const pageOwnerId = userData._id; // назначаем переменную хозяина страницы
     console.log(pageOwnerId); // 0831699e8c089d4fe917fe41 (правильно)
     
@@ -224,7 +231,10 @@ Promise.all([updateUserFromServer(), updateCardsFromServer()])
       console.log(card);
       const cardOwnerId = card.owner._id; // назначаем переменную автора карточки
       console.log(cardOwnerId); //688d72b1e612f990d333e149
-   
+      const cardId = card._id;
+      console.log('выше айди карточки');
+      console.log(cardId);
+      console.log('выше айди карточки');
     }); 
     
     addCard(cardData, pageOwnerId); 
@@ -234,11 +244,6 @@ Promise.all([updateUserFromServer(), updateCardsFromServer()])
 
 
 
-   /*
-    if (cardElement.owner._id !== '0831699e8c089d4fe917fe41') {
-      deleteButton.classList.add('invisible');
-    };
-    */
 
 
 

@@ -1,7 +1,7 @@
 export { makeCard, deleteCard, activeLikeButton };
 
-
-
+import { deleteCardFromServer } from './api.js';
+ 
 // ------------------------ функция создания карточки с 5-го спринта ------------------------// 
 
 function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack) { //при добавлении карточки cardElement = элемент массива, deleteCallBack = deleteCard
@@ -17,7 +17,7 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack) 
 
     const deleteButton = placesItem.querySelector('.card__delete-button'); // назначаем кнопку удаления 
     deleteButton.addEventListener('click', () => { // по нажатию на кнопку запускается колбэк
-      deleteCallBack(placesItem); // 
+      deleteCallBack(placesItem, cardElement); // 
     }); 
 
     // функция колбэк - лайк картинки 
@@ -42,8 +42,9 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack) 
 
 // ----------------- Функции - колбэки ----------------- //
 
-function deleteCard(item) { //deleteCard => deleteCallBack при объявлении addCard card.js
+function deleteCard(item, data) { //deleteCard => deleteCallBack при объявлении addCard card.js
    item.remove(); //убираем карточку
+   deleteCardFromServer(data);
 }
 
 function activeLikeButton(button) { // activeLikeButton => likeCallBack при объявлении addCard card.js
