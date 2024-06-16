@@ -1,6 +1,6 @@
 import './pages/index.css'; 
 //import { initialCards } from './scripts/cards.js';
-import { makeCard, deleteCard, activeLikeButton } from './scripts/card.js';
+import { makeCard, deleteCard, activeLike } from './scripts/card.js';
 import { /*openPopupWindow,*/ addPopupOpened, closeModal, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
 
@@ -48,17 +48,15 @@ function addCard(cardArray, userId) {
 
   cardArray.forEach((data) => { //data - каждый элемент массива 
 
-    const card = makeCard(data, deleteCard, activeLikeButton, openImagePopup); //подставляем data в функцию makeCard
-    console.log(data);
-    console.log(data.owner._id);
-    console.log(data._id);
+    const card = makeCard(data, deleteCard, activeLike, openImagePopup, userId); //подставляем data в функцию makeCard
   
     console.log('v');
-    console.log(data._id);
-    console.log('получили айди карточки');
+    console.log(data);
+    console.log(data.likes);
+    console.log(data.likes[0]);
     console.log('^');
 
-    console.log(card); 
+    console.log(userId);
 
     // ------- убираем иконку корзинки с чужих карточек ------- //
 
@@ -75,8 +73,9 @@ function addCard(cardArray, userId) {
     const cardLikeCount = card.querySelector('.card__like-count');
     cardLikeCount.innerHTML = likesNumber;
 
-    placesList.append(card); // добавляем карточку
+    placesList.append(card); 
   });
+   // ---------------- добавляем карточку ---------------- //
 }    
 
 // --------------- Вводим данные в форму редактирования профиля  ---------------- //
@@ -207,10 +206,6 @@ updateCardsFromServer();
 
 
 
-
-
-
-
 // --------------- ПРОМИС --------------- //
 
 Promise.all([updateUserFromServer(), updateCardsFromServer()])
@@ -239,7 +234,6 @@ Promise.all([updateUserFromServer(), updateCardsFromServer()])
     
     addCard(cardData, pageOwnerId); 
   })
-
 
 
 
