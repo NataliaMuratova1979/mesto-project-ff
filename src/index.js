@@ -44,20 +44,16 @@ closePopupButtons.forEach(closeModal);
 
 // -------------- Отображение карточек из массива при открытии страницы ---------------- //
 
-function addCard(cardArray, userId) {
+function addCard(cardArray, userId) { // cardArray - массив карточек, полученный из промиса
 
   cardArray.forEach((data) => { //data - каждый элемент массива 
 
     const card = makeCard(data, deleteCard, activeLike, openImagePopup, userId); //подставляем data в функцию makeCard
   
-    console.log('v');
-    console.log(data);
-    console.log(data.likes);
-    console.log(data.likes[0]);
+    console.log(data); // данные карточки, полученные с сервера
 
-    console.log('^');
 
-    console.log(userId);
+    console.log(userId); // id юзера, полученный с сервера и переданный аргументом из промиса
 
     // ------- убираем иконку корзинки с чужих карточек ------- //
 
@@ -79,11 +75,12 @@ function addCard(cardArray, userId) {
     const cardLikeButton = card.querySelector('.card__like-button');
     for (let i = 0; i < data.likes.length; i++) {
       if (data.likes[i]._id === userId) {
-        console.log('я лайкнула');
+        console.log('черное сердечко');
         cardLikeButton.classList.add('card__like-button_is-active');
       } 
     }
-  
+   
+
     placesList.append(card); 
   });
    // ---------------- добавляем карточку ---------------- //
@@ -216,7 +213,6 @@ function updateCardsFromServer() {
 updateCardsFromServer();
 
 
-
 // --------------- ПРОМИС --------------- //
 
 Promise.all([updateUserFromServer(), updateCardsFromServer()])
@@ -233,23 +229,15 @@ Promise.all([updateUserFromServer(), updateCardsFromServer()])
     console.log(pageOwnerId); // 0831699e8c089d4fe917fe41 (правильно)
     
     cardData.forEach((card) => { 
-      console.log(pageOwnerId); // 1 (неправильно)
-      console.log(card);
+    
       const cardOwnerId = card.owner._id; // назначаем переменную автора карточки
       console.log(cardOwnerId); //688d72b1e612f990d333e149
       const cardId = card._id;
-      console.log('выше айди карточки');
-      console.log(cardId);
-      console.log('выше айди карточки');
+      
     }); 
     
     addCard(cardData, pageOwnerId); 
   })
-
-
-
-
-
 
 
 //---------------- Редактирование профиля на сервере ----------------//
@@ -307,109 +295,3 @@ function saveCardToServer(newCard) {  // функция редактирован
     .then(res => console.log(res))
 }
 
-/*
-https://kartinki.pics/pics/uploads/posts/2022-07/1658442329_22-kartinkin-net-p-zaitsi-v-petropavlovskoi-kreposti-zhivotni-23.jpg
-*/
-
-
-
-/*
-function deleteCardFromServer() {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-16/cards/k', {
-    headers: {
-      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8'
-    }
-    })
-
-
-    .then((res) => {
-      return res.json();
-    })
-    .then((data) => {
-      profileTitle.textContent = data.name;
-      profileDescription.textContent = data.about;
-      profileImage.link = data.avatar;
-    });
-}
-*/
-
-
-
-
-
-/*
-
-//---------------- Загрузка информации о пользователе с сервера ----------------//
-
-function updateUserFromServer() {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
-    headers: {
-      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8'
-    }
-    })
-    .then((res) => {
-      return res.json();
-    })
-    .then((data) => {
-      profileTitle.textContent = data.name;
-      profileDescription.textContent = data.about;
-      profileImage.link = data.avatar;
-
-      const userId = data._id; // назначаем переменную
-
-      console.log(userId); // снова работает
-
-      return userId; 
-    });
-}
-
-updateUserFromServer();
-
-//---------------- Загрузка карточек с сервера ----------------//
-
-function updateCardsFromServer() {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
-    headers: {
-      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8'
-    }
-    })
-    .then((res) => {
-      return res.json();
-    })
-    .then((data) => {      
-
-      console.log('данные') 
-      console.log(data);
-      console.log(data[9]);
-
-      console.log('ВЫВОДИМ В КОНСОЛЬ ХОЗЯИНА');
-      console.log(data[0].owner._id);
-
-      const newArray = data;
-
-      console.log('массив');
-      console.log(newArray);
-
-      console.log('элемент массива');
-      console.log(newArray[0]);
-      console.log(newArray[0].name);
-      console.log(newArray[0].link);
-
-      console.log('placesList');
-      console.log(placesList);
-
-      console.log('функция');
-      console.log(addCard);
-      
-      //console.log('ЕЩЕ РАЗ ВЫВОДИМ В КОНСОЛЬ ХОЗЯИНА');
-
-      newArray.forEach((data) => {
-        console.log(data.owner._id);
-      });
-
-      addCard(newArray);           
-    });
-}
-updateCardsFromServer();
-
-*/

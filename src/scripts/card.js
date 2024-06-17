@@ -25,10 +25,10 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack, 
     }); 
 
     // функция колбэк - лайк картинки 
-
+    const likeCount = placesItem.querySelector('.card__like-count'); 
     const likeButton = placesItem.querySelector('.card__like-button'); // назначаем кнопку лайк
     likeButton.addEventListener('click', () => { // по нажатию на кнопку запускается колбэк
-      likeCallBack(likeButton, cardElement, userId);  
+      likeCallBack(likeButton, cardElement, userId, likeCount);  
     });
     
     //функция колбэк - открытие модального окна
@@ -50,47 +50,32 @@ function deleteCard(item, data) { //deleteCard => deleteCallBack при объя
    deleteCardFromServer(data); // функция удаления карточки с сервера принимает аргументом данные из массива
 };
 
-function activeLike(button, data, user) { // activeLikeButton => likeCallBack при объявлении addCard card.js
+function activeLike(button, data, user, count) { // activeLikeButton => likeCallBack при объявлении addCard card.js
     const arr = data.likes;
     console.log(data.likes);
     console.log(data.likes.length);
     console.log(arr.length);
+    console.log(count); // число лайкков под сердечком   
+
+    const currentCount = parseInt(arr.length, 10);
+    console.log(currentCount);
+    
     if (arr.length === 0) {
       button.classList.add('card__like-button_is-active');
-      putLIkeOnServer(data);       
+      putLIkeOnServer(data); 
+      count.textContent = currentCount + 1;
     }
-    console.log(user);
-    console.log('ниж е');
-   // console.log(arr[0]._id);
-    console.log('dsit'); 
-
-
-/*
+     
     for (let i = 0; i < arr.length; i++) {
       if (arr[i]._id !== user) {
-        console.log('nouser');
         button.classList.add('card__like-button_is-active');
-        putLIkeOnServer(data);      
+        putLIkeOnServer(data);  
+        count.textContent = currentCount + 1;
+  
       } else {
-        console.log('user');    
-
         button.classList.remove('card__like-button_is-active');
         removeLikeFromServer(data);
+        count.textContent = currentCount - 1;
       }
-    }*/
+    }
 }
-
-  //removeLikeFromServer(data);
-
-
-/*
-button.classList.add('card__like-button_is-active');
-putLIkeOnServer(data);
-console.log('получилосьььььььь');
-console.log(user);
-console.log(data.likes);
-const array = data.likes;
-console.log(array);
-console.log('получилосьььььььь');
-*/
-
