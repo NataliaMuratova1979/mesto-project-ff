@@ -50,32 +50,66 @@ function deleteCard(item, data) { //deleteCard => deleteCallBack при объя
    deleteCardFromServer(data); // функция удаления карточки с сервера принимает аргументом данные из массива
 };
 
-function activeLike(button, data, user, count) { // activeLikeButton => likeCallBack при объявлении addCard card.js
-    const arr = data.likes;
-    console.log(data.likes);
-    console.log(data.likes.length);
-    console.log(arr.length);
-    console.log(count); // число лайкков под сердечком   
+function activeLike(button, dataCard, user, count) { // activeLike => likeCallBack при объявлении addCard card.js
+    console.log('что такое дата');
+    console.log(dataCard);
 
-    const currentCount = parseInt(arr.length, 10);
-    console.log(currentCount);
+
+    console.log('сколько сердечек');
+    const arrLikes = dataCard.likes;
+    console.log(arrLikes.length);
     
+    console.log('что за кнопка');
+    console.log(button);    
+    
+    /*
     if (arr.length === 0) {
       button.classList.add('card__like-button_is-active');
       putLIkeOnServer(data); 
       count.textContent = currentCount + 1;
-    }
+    }*/
      
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i]._id !== user) {
-        button.classList.add('card__like-button_is-active');
-        putLIkeOnServer(data);  
-        count.textContent = currentCount + 1;
-  
-      } else {
-        button.classList.remove('card__like-button_is-active');
-        removeLikeFromServer(data);
-        count.textContent = currentCount - 1;
-      }
+    //for (let i = 0; i < arr.length; i++) {
+
+    console.log(user); //0831699e8c089d4fe917fe41
+    console.log(arrLikes);//
+   // console.log(arr[0]._id);
+ 
+
+    if (button.classList.contains('card__like-button_is-active')) {
+      button.classList.remove('card__like-button_is-active');
+      console.log('по этой карточке уже кликали');
+
+      removeLikeFromServer(dataCard).then((data) => {
+        console.log('получили данные с сервера');
+        console.log(data);
+        console.log('получили массив лайков');
+        console.log(data.likes);
+        console.log('куда попадают данные о количестве сердечек')
+        console.log(count); // число лайкков под сердечком  
+        
+        const currentCount = parseInt(data.likes.length, 10);
+        console.log(currentCount);
+        count.textContent = currentCount;
+      })  
+        
+      
+    } else {
+      button.classList.add('card__like-button_is-active');
+      console.log('по этой карточке еще не кликали');
+
+      putLIkeOnServer(dataCard).then((data) => {
+        console.log('получили данные с сервера');
+        console.log(data);
+        console.log('получили массив лайков');
+        console.log(data.likes);
+        console.log('куда попадают данные о количестве сердечек')
+        console.log(count); // число лайкков под сердечком  
+
+        const currentCount = parseInt(data.likes.length, 10);
+        console.log(currentCount);
+        count.textContent = currentCount;
+      })  
     }
+    
 }

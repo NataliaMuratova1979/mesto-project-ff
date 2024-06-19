@@ -106,25 +106,34 @@ formElement.addEventListener('submit', handleFormSubmit);
 function makeNewCardData(evt) { // функция добавления карточки 
   evt.preventDefault();
   
-  const newCardData = new Object();    
+ // const newCardData = new Object();    
 
-  newCardData.name = placeInput.value;
-  newCardData.link = linkInput.value;
+ // newCardData.name = placeInput.value;
+//  newCardData.link = linkInput.value;
 
-  const cardToInsert = makeCard(newCardData, deleteCard, activeLikeButton, openImagePopup);
-
-  placesList.prepend(cardToInsert); // добавляем карточку на страницу в начало контейнера
+  // добавляем карточку на страницу в начало контейнера
 
   const newCardFromInput = {
     "name": placeInput.value,
     "link": linkInput.value,
   };
 
-  saveCardToServer(newCardFromInput);
- 
-  evt.target.reset(); 
+  saveCardToServer(newCardFromInput).then((data) => {
+    console.log('данные');
+    console.log(data);    
+    const cardDataFromServer = data;
+    console.log(cardDataFromServer);
 
-  removePopupOpened(placePopup);
+    const userId = cardDataFromServer.owner._id;
+
+    const cardToInsert = makeCard(cardDataFromServer, deleteCard, activeLike, openImagePopup, userId);
+
+    placesList.prepend(cardToInsert);
+
+    evt.target.reset(); 
+
+    removePopupOpened(placePopup);
+  });   
 }
 
 formElementPlace.addEventListener('submit', makeNewCardData); 
@@ -281,7 +290,7 @@ formElement.addEventListener('submit', function(event) { // отправляем
 console.log('добавляем карточку');
 
 function saveCardToServer(newCard) {  // функция редактирования карточек на сервере
-  fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
+  return fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
 
     method: 'POST',
     headers: {
@@ -291,7 +300,6 @@ function saveCardToServer(newCard) {  // функция редактирован
     body: JSON.stringify(newCard),
     })
 
-    .then(res => res.json())
-    .then(res => console.log(res))
+    .then(res => res.json())    
 }
 
