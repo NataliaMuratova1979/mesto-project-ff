@@ -27,7 +27,6 @@ const linkInput = formElementPlace.querySelector('.popup__input_type_url');
 
 const openDeleteCardButton = formElementPlace.querySelector('.popup__button');
 
-
 const popupImageWindow = document.querySelector('.popup_type_image'); // модальное окно большая картинка
 const popupImageContent = popupImageWindow.querySelector('.popup__content_content_image');
 const popupImagePicture = popupImageContent.querySelector('.popup__image');
@@ -50,15 +49,13 @@ function addCard(cardArray, userId) { // cardArray - массив карточе
 
     const card = makeCard(data, deleteCard, activeLike, openImagePopup, userId); //подставляем data в функцию makeCard
   
-    console.log(data); // данные карточки, полученные с сервера
-
-
-    console.log(userId); // id юзера, полученный с сервера и переданный аргументом из промиса
+    //console.log(data); // данные карточки, полученные с сервера
+    //console.log(userId); // id юзера, полученный с сервера и переданный аргументом из промиса
 
     // ------- убираем иконку корзинки с чужих карточек ------- //
 
     const deleteButton = card.querySelector('.card__delete-button');
-    console.log(deleteButton);
+    //console.log(deleteButton);
     const cardOwnerId = data.owner._id;
     if (cardOwnerId !== userId) { 
       deleteButton.classList.add('invisible');
@@ -75,15 +72,13 @@ function addCard(cardArray, userId) { // cardArray - массив карточе
     const cardLikeButton = card.querySelector('.card__like-button');
     for (let i = 0; i < data.likes.length; i++) {
       if (data.likes[i]._id === userId) {
-        console.log('черное сердечко');
+        //console.log('черное сердечко');
         cardLikeButton.classList.add('card__like-button_is-active');
       } 
     }
-   
-
+    // --- добавляем карточку --- //
     placesList.append(card); 
   });
-   // ---------------- добавляем карточку ---------------- //
 }    
 
 // --------------- Вводим данные в форму редактирования профиля  ---------------- //
@@ -178,18 +173,9 @@ function openImagePopup(cardElement) { // openPopup - openImagePopup => openPopu
  
 enableValidation();
 
-/*
-Токен: 4b9f7beb-0341-4736-bda4-4b385e06b9d8
-Идентификатор группы: wff-cohort-16
-*/
 
-
-/*const profile__image background-image url */
 const profileImage = document.querySelector('.profile__image');
-//const profileTitle = document.querySelector('.profile__title');
-//const profileDescription = document.querySelector('.profile__description'); 
 const card = document.querySelector('.card');
-//const UserId = card.owner._id;
 
 //---------------- Загрузка информации о пользователе с сервера ----------------//
 
@@ -204,8 +190,6 @@ function updateUserFromServer() {
     })
 }    
   
-updateUserFromServer();
-
 //---------------- Загрузка карточек с сервера ----------------//
 
 function updateCardsFromServer() {
@@ -219,9 +203,6 @@ function updateCardsFromServer() {
     })
 }
 
-updateCardsFromServer();
-
-
 // --------------- ПРОМИС --------------- //
 
 Promise.all([updateUserFromServer(), updateCardsFromServer()])
@@ -232,7 +213,7 @@ Promise.all([updateUserFromServer(), updateCardsFromServer()])
     
     profileTitle.textContent = userData.name;
     profileDescription.textContent = userData.about;
-    profileImage.link = userData.avatar;
+    profileImage.style.backgroundImage = (`url(${userData.avatar})`);
 
     const pageOwnerId = userData._id; // назначаем переменную хозяина страницы
     console.log(pageOwnerId); // 0831699e8c089d4fe917fe41 (правильно)
@@ -248,10 +229,7 @@ Promise.all([updateUserFromServer(), updateCardsFromServer()])
     addCard(cardData, pageOwnerId); 
   })
 
-
 //---------------- Редактирование профиля на сервере ----------------//
-
-console.log('редактируем профиль');
 
 function saveUserToServer(newUser) {  // функция редактирования профиля на сервере
   fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
@@ -263,11 +241,10 @@ function saveUserToServer(newUser) {  // функция редактирован
     },
     body: JSON.stringify(newUser),
     })
-
+    
     .then(res => res.json())
     .then(res => console.log(res))  
 }
-
 
 formElement.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
 
@@ -278,16 +255,11 @@ formElement.addEventListener('submit', function(event) { // отправляем
     "about": jobInput.value,
   }
 
-  console.log(newUserFromInput);
   saveUserToServer(newUserFromInput);
-  console.log('все работает');
-
 });
   
 
 //---------------- Добавление карточки на сервер ----------------//
-
-console.log('добавляем карточку');
 
 function saveCardToServer(newCard) {  // функция редактирования карточек на сервере
   return fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
@@ -301,5 +273,53 @@ function saveCardToServer(newCard) {  // функция редактирован
     })
 
     .then(res => res.json())    
+}
+
+
+//---------------- Обновление аватара пользователя ----------------//
+
+const avatarButton = document.querySelector('.profile__image-hover');
+const avatarPopup = document.querySelector('.popup_type_avatar');
+
+const formAvatar = document.forms['edit-avatar']; // форма добавления новой карточки
+const inputAvatar = formAvatar.querySelector('.popup__input_type_url_avatar');
+
+
+avatarButton.addEventListener('click', function (event) { // Открываем форму редактирования аватара пользователя
+  clearValidation(formAvatar);
+  addPopupOpened(avatarPopup);
+});
+
+
+formAvatar.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
+ 
+  event.preventDefault();
+  console.log(inputAvatar.value);
+
+  const newUserAvatar = {
+    "avatar": inputAvatar.value,
+  }
+
+  saveAvatarToServer(newUserAvatar).then((data) => {
+ 
+     profileImage.style.backgroundImage = (`url(${data.avatar})`);
+  });
+
+  removePopupOpened(avatarPopup);
+});
+
+
+function saveAvatarToServer(avatarLink) {  // функция редактирования профиля на сервере
+
+  return fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me/avatar', {
+
+    method: 'PATCH',
+    headers: {
+      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(avatarLink),
+    })
+    .then(res => res.json())
 }
 

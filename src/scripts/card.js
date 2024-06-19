@@ -62,20 +62,6 @@ function activeLike(button, dataCard, user, count) { // activeLike => likeCallBa
     console.log('что за кнопка');
     console.log(button);    
     
-    /*
-    if (arr.length === 0) {
-      button.classList.add('card__like-button_is-active');
-      putLIkeOnServer(data); 
-      count.textContent = currentCount + 1;
-    }*/
-     
-    //for (let i = 0; i < arr.length; i++) {
-
-    console.log(user); //0831699e8c089d4fe917fe41
-    console.log(arrLikes);//
-   // console.log(arr[0]._id);
- 
-
     if (button.classList.contains('card__like-button_is-active')) {
       button.classList.remove('card__like-button_is-active');
       console.log('по этой карточке уже кликали');
@@ -91,8 +77,7 @@ function activeLike(button, dataCard, user, count) { // activeLike => likeCallBa
         const currentCount = parseInt(data.likes.length, 10);
         console.log(currentCount);
         count.textContent = currentCount;
-      })  
-        
+      })        
       
     } else {
       button.classList.add('card__like-button_is-active');

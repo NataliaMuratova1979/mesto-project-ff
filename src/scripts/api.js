@@ -26,7 +26,6 @@ function deleteCardFromServer(card) {  // card => data в функции makeCar
     .then((res) => {
       return res.json();
     })
-
 }
 
 //---------------- Постановка лайка на сервере ----------------//
@@ -51,9 +50,7 @@ function putLIkeOnServer(card) {  // card => data в функции makeCard
     })
     .then((res) => {
       return res.json();
-    }) 
-
-    
+    })     
 }
 
 //---------------- Удаление лайка на сервере ----------------//
@@ -77,3 +74,5 @@ function removeLikeFromServer(card) {  // card => data в функции makeCar
   })
   
 }
+
+

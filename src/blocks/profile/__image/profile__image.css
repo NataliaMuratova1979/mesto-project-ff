@@ -7,7 +7,33 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
+
+  position: relative;
+  z-index: 0;
 }
+
+.profile__image-hover {
+  position: absolute;
+  z-index: 10;
+
+  width: 120px;
+  height: 120px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  margin: 0 29px 0 0;
+}
+
+.profile__image-hover:hover {
+  background-color: aqua;
+  opacity: .3;  
+}
+
+
+
+
 
 @media screen and (max-width: 740px) {
   .profile__image {
