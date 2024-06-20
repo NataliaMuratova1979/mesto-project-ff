@@ -3,8 +3,8 @@ import './pages/index.css';
 import { makeCard, deleteCard, activeLike } from './scripts/card.js';
 import { /*openPopupWindow,*/ addPopupOpened, closeModal, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
+import { saveAvatarToServer, saveCardToServer, saveUserToServer, updateCardsFromServer, updateUserFromServer } from './scripts/api.js';
 
-//import { deleteCardFromServer } from './scripts/api.js';
 
 
 // -------------- Константы элементов DOM -------------- //
@@ -17,7 +17,6 @@ const nameInput = formElement.elements.name;
 const jobInput = formElement.elements.description;
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description'); 
-
 
 const placePopup = document.querySelector('.popup_type_new-card'); // добавление новой карточки
 const formElementPlace = document.forms['new-place']; // форма добавления новой карточки
@@ -40,6 +39,11 @@ const openAddButton = document.querySelector('.profile__add-button'); //кноп
 const closePopupButtons = document.querySelectorAll('.popup__close'); //массив кнопки закрытия модального окна
 closePopupButtons.forEach(closeModal);
 
+const avatarButton = document.querySelector('.profile__image-hover');
+const avatarPopup = document.querySelector('.popup_type_avatar');
+const formAvatar = document.forms['edit-avatar']; // форма редактирования аватара
+const inputAvatar = formAvatar.querySelector('.popup__input_type_url_avatar');
+
 
 // -------------- Отображение карточек из массива при открытии страницы ---------------- //
 
@@ -55,7 +59,6 @@ function addCard(cardArray, userId) { // cardArray - массив карточе
     // ------- убираем иконку корзинки с чужих карточек ------- //
 
     const deleteButton = card.querySelector('.card__delete-button');
-    //console.log(deleteButton);
     const cardOwnerId = data.owner._id;
     if (cardOwnerId !== userId) { 
       deleteButton.classList.add('invisible');
@@ -72,7 +75,6 @@ function addCard(cardArray, userId) { // cardArray - массив карточе
     const cardLikeButton = card.querySelector('.card__like-button');
     for (let i = 0; i < data.likes.length; i++) {
       if (data.likes[i]._id === userId) {
-        //console.log('черное сердечко');
         cardLikeButton.classList.add('card__like-button_is-active');
       } 
     }
@@ -101,11 +103,6 @@ formElement.addEventListener('submit', handleFormSubmit);
 function makeNewCardData(evt) { // функция добавления карточки 
   evt.preventDefault();
   
- // const newCardData = new Object();    
-
- // newCardData.name = placeInput.value;
-//  newCardData.link = linkInput.value;
-
   // добавляем карточку на страницу в начало контейнера
 
   const newCardFromInput = {
@@ -178,30 +175,12 @@ const profileImage = document.querySelector('.profile__image');
 const card = document.querySelector('.card');
 
 //---------------- Загрузка информации о пользователе с сервера ----------------//
+// updateUserFromServer - функция загрузки информации о пользователе с сервера
 
-function updateUserFromServer() {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
-    headers: {
-      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8'
-    }
-    })
-    .then((res) => {
-      return res.json();
-    })
-}    
   
 //---------------- Загрузка карточек с сервера ----------------//
+// updateCardsFromServer - функция загрузки карточек с сервера
 
-function updateCardsFromServer() {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
-    headers: {
-      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8'
-    }
-    })
-    .then((res) => {
-      return res.json();
-    })
-}
 
 // --------------- ПРОМИС --------------- //
 
@@ -230,21 +209,7 @@ Promise.all([updateUserFromServer(), updateCardsFromServer()])
   })
 
 //---------------- Редактирование профиля на сервере ----------------//
-
-function saveUserToServer(newUser) {  // функция редактирования профиля на сервере
-  fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me', {
-
-    method: 'PATCH',
-    headers: {
-      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(newUser),
-    })
-    
-    .then(res => res.json())
-    .then(res => console.log(res))  
-}
+// saveUserToServer - функция редактирования профиля на сервере
 
 formElement.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
 
@@ -260,41 +225,22 @@ formElement.addEventListener('submit', function(event) { // отправляем
   
 
 //---------------- Добавление карточки на сервер ----------------//
-
-function saveCardToServer(newCard) {  // функция редактирования карточек на сервере
-  return fetch('https://nomoreparties.co/v1/wff-cohort-16/cards', {
-
-    method: 'POST',
-    headers: {
-      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(newCard),
-    })
-
-    .then(res => res.json())    
-}
+// saveCardToServer - Функция сохранения карточки на сервере
 
 
 //---------------- Обновление аватара пользователя ----------------//
-
-const avatarButton = document.querySelector('.profile__image-hover');
-const avatarPopup = document.querySelector('.popup_type_avatar');
-
-const formAvatar = document.forms['edit-avatar']; // форма добавления новой карточки
-const inputAvatar = formAvatar.querySelector('.popup__input_type_url_avatar');
-
+// saveAvatarToServer - функция редактирования профиля на сервере
 
 avatarButton.addEventListener('click', function (event) { // Открываем форму редактирования аватара пользователя
   clearValidation(formAvatar);
   addPopupOpened(avatarPopup);
 });
 
-
 formAvatar.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
- 
   event.preventDefault();
   console.log(inputAvatar.value);
+
+  renderLoading(true);
 
   const newUserAvatar = {
     "avatar": inputAvatar.value,
@@ -302,24 +248,27 @@ formAvatar.addEventListener('submit', function(event) { // отправляем 
 
   saveAvatarToServer(newUserAvatar).then((data) => {
  
-     profileImage.style.backgroundImage = (`url(${data.avatar})`);
+     profileImage.style.backgroundImage = (`url(${data.avatar})`)
+
+      .finally(() => {
+      renderLoading(false);
+    });
+
   });
+
 
   removePopupOpened(avatarPopup);
 });
 
 
-function saveAvatarToServer(avatarLink) {  // функция редактирования профиля на сервере
+// ------------ Функция уведомления о процессе загрузки ------------ //
+// должна вызываться внутри функций обновление аватара, обновление пользователя, добавление карточки
+// saveAvatarToServer saveUserToServer saveCardToServer 
 
-  return fetch('https://nomoreparties.co/v1/wff-cohort-16/users/me/avatar', {
-
-    method: 'PATCH',
-    headers: {
-      authorization: '4b9f7beb-0341-4736-bda4-4b385e06b9d8',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(avatarLink),
-    })
-    .then(res => res.json())
+function renderLoading(isLoading) {
+  if (isLoading) {
+    savePlaceButton.innerHTML = "Сохранение...";
+  } else {
+    savePlaceButton.innerHTML = "Сохранить";
+  }
 }
-
