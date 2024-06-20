@@ -33,7 +33,7 @@ function hideInputError(formSelector, inputSelector) {
   // inputSelector: '.popup__input' - html-элемент поле ввода 
   // функция получает параметром форму, в которой находится проверяемое поле, и это само поле - проверяемое поле ввода
   
-function checkInputValidity(formSelector, inputSelector) { //не проверено 
+function checkInputValidity(formSelector, inputSelector) { 
   
     if (inputSelector.validity.patternMismatch) { 
       inputSelector.setCustomValidity(inputSelector.dataset.errorMessage);
@@ -61,7 +61,7 @@ function checkInputValidity(formSelector, inputSelector) { //не провере
   
   const toggleButtonState = (inputList, buttonElement) => {
     if (hasInvalidInput(inputList)) {
-          buttonElement.disabled = true;
+        buttonElement.disabled = true;
         buttonElement.classList.add('popup__button_disabled');
     } else { 
           buttonElement.disabled = false;
@@ -83,7 +83,7 @@ function checkInputValidity(formSelector, inputSelector) { //не провере
   
     inputList.forEach((inputSelector) => {
   
-      inputSelector.addEventListener('input', function () {
+        inputSelector.addEventListener('input', function () {
   
         checkInputValidity(formSelector, inputSelector);
         toggleButtonState(inputList, buttonElement);

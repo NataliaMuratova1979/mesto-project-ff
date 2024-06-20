@@ -102,6 +102,8 @@ formElement.addEventListener('submit', handleFormSubmit);
 
 function makeNewCardData(evt) { // функция добавления карточки 
   evt.preventDefault();
+
+  renderLoading(true);
   
   // добавляем карточку на страницу в начало контейнера
 
@@ -123,6 +125,8 @@ function makeNewCardData(evt) { // функция добавления карт�
     placesList.prepend(cardToInsert);
 
     evt.target.reset(); 
+
+    renderLoading(false);
 
     removePopupOpened(placePopup);
   });   
@@ -150,7 +154,7 @@ openEditButton.addEventListener('click', function (event) {
 
  });
 
-openAddButton.addEventListener('click', function (event) {
+openAddButton.addEventListener('click', function (event) {// добавляем карточку
 
   addPopupOpened(placePopup);
   clearValidation(formElementPlace);
@@ -206,27 +210,38 @@ Promise.all([updateUserFromServer(), updateCardsFromServer()])
     }); 
     
     addCard(cardData, pageOwnerId); 
-  })
+  });
 
 //---------------- Редактирование профиля на сервере ----------------//
 // saveUserToServer - функция редактирования профиля на сервере
 
 formElement.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
-
   event.preventDefault();
+
+  renderLoading(true);
 
   const newUserFromInput = {
     "name": nameInput.value,
     "about": jobInput.value,
   }
 
-  saveUserToServer(newUserFromInput);
+  saveUserToServer(newUserFromInput).then((data) => {
+
+     console.log(data)
+ 
+     .catch((err) => {
+       console.log(err)
+     })
+
+     .finally(() => {
+     renderLoading(false);
+     });
+  });
 });
   
 
 //---------------- Добавление карточки на сервер ----------------//
 // saveCardToServer - Функция сохранения карточки на сервере
-
 
 //---------------- Обновление аватара пользователя ----------------//
 // saveAvatarToServer - функция редактирования профиля на сервере
@@ -250,19 +265,20 @@ formAvatar.addEventListener('submit', function(event) { // отправляем 
  
      profileImage.style.backgroundImage = (`url(${data.avatar})`)
 
+      .catch((err) => {
+        console.log(err)
+      })
+
       .finally(() => {
       renderLoading(false);
     });
-
   });
-
 
   removePopupOpened(avatarPopup);
 });
 
 
 // ------------ Функция уведомления о процессе загрузки ------------ //
-// должна вызываться внутри функций обновление аватара, обновление пользователя, добавление карточки
 // saveAvatarToServer saveUserToServer saveCardToServer 
 
 function renderLoading(isLoading) {
