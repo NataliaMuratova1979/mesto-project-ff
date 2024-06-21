@@ -1,9 +1,9 @@
 import './pages/index.css'; 
-//import { initialCards } from './scripts/cards.js';
 import { makeCard, deleteCard, activeLike } from './scripts/card.js';
 import { /*openPopupWindow,*/ addPopupOpened, closeModal, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { saveAvatarToServer, saveCardToServer, saveUserToServer, updateCardsFromServer, updateUserFromServer } from './scripts/api.js';
+import { savesAvatar, savesCard, savesUser, updatesCards, updatesUser } from './scripts/api.js';
+//import { renderLoading } from './scripts/utils.js';
 
 
 
@@ -12,9 +12,9 @@ import { saveAvatarToServer, saveCardToServer, saveUserToServer, updateCardsFrom
 const placesList = document.querySelector('.places__list'); // addCard
 
 const profilePopup = document.querySelector('.popup_type_edit'); // редактирование профиля
-const formElement = document.forms['edit-profile']; // форма редактирования профиля
-const nameInput = formElement.elements.name;
-const jobInput = formElement.elements.description;
+const formEditProfile = document.forms['edit-profile']; // форма редактирования профиля
+const nameInput = formEditProfile.elements.name;
+const jobInput = formEditProfile.elements.description;
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description'); 
 
@@ -53,23 +53,6 @@ function addCard(cardArray, userId) { // cardArray - массив карточе
 
     const card = makeCard(data, deleteCard, activeLike, openImagePopup, userId); //подставляем data в функцию makeCard
   
-    //console.log(data); // данные карточки, полученные с сервера
-    //console.log(userId); // id юзера, полученный с сервера и переданный аргументом из промиса
-
-    // ------- убираем иконку корзинки с чужих карточек ------- //
-
-    const deleteButton = card.querySelector('.card__delete-button');
-    const cardOwnerId = data.owner._id;
-    if (cardOwnerId !== userId) { 
-      deleteButton.classList.add('invisible');
-    };
-
-    // ------- отображаем количество лайков карточки ------- //
-
-    const likesNumber = data.likes.length;
-    const cardLikeCount = card.querySelector('.card__like-count');
-    cardLikeCount.innerHTML = likesNumber;
-
     // ------ закрашиваем сердечко у лайкнутой карточки ------- //
 
     const cardLikeButton = card.querySelector('.card__like-button');
@@ -78,32 +61,42 @@ function addCard(cardArray, userId) { // cardArray - массив карточе
         cardLikeButton.classList.add('card__like-button_is-active');
       } 
     }
-    // --- добавляем карточку --- //
-    placesList.append(card); 
+    
+    placesList.append(card); // --- добавляем карточку --- //
   });
 }    
 
-// --------------- Вводим данные в форму редактирования профиля  ---------------- //
 
-addPopupAnimated(profilePopup);
 
-function handleFormSubmit(evt) {// функция редактирования профиля
 
-  evt.preventDefault();
-  profileTitle.textContent = nameInput.value;  
-  profileDescription.textContent = jobInput.value; 
 
-  removePopupOpened(profilePopup); 
-}
 
-formElement.addEventListener('submit', handleFormSubmit);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // --------------- Вводим данные в форму добавления новой карточки  ---------------- //
 
 function makeNewCardData(evt) { // функция добавления карточки 
   evt.preventDefault();
-
-  renderLoading(true);
+  
+  const button = formElementPlace.querySelector('.popup__button');
+  renderLoading(true, button);
+  console.log(button);
+  console.log('это кнопка сохранить');
   
   // добавляем карточку на страницу в начало контейнера
 
@@ -112,25 +105,26 @@ function makeNewCardData(evt) { // функция добавления карт�
     "link": linkInput.value,
   };
 
-  saveCardToServer(newCardFromInput).then((data) => {
-    console.log('данные');
-    console.log(data);    
+  savesCard(newCardFromInput).then((data) => {
+
     const cardDataFromServer = data;
-    console.log(cardDataFromServer);
-
     const userId = cardDataFromServer.owner._id;
-
     const cardToInsert = makeCard(cardDataFromServer, deleteCard, activeLike, openImagePopup, userId);
 
     placesList.prepend(cardToInsert);
+    })
 
-    evt.target.reset(); 
+    .catch((err) => {
+      console.log(err)
+    })
 
-    renderLoading(false);
+    .finally(() => {
+      renderLoading(false, button);
+      console.log(button);   
+    });
 
-    removePopupOpened(placePopup);
-  });   
-}
+    removePopupOpened(placePopup);     
+};
 
 formElementPlace.addEventListener('submit', makeNewCardData); 
 
@@ -142,12 +136,8 @@ openEditButton.addEventListener('click', function (event) {
   nameInput.placeholder = profileTitle.textContent;
   jobInput.placeholder = profileDescription.textContent;
 
-  clearValidation(formElement); 
-  addPopupOpened(profilePopup);
-
-  //nameInput.value = profileTitle.textContent;
-  //jobInput.value = profileDescription.textContent;
-  //update placeholder
+  clearValidation(formEditProfile); 
+  addPopupOpened(profilePopup);  
 
   nameInput.placeholder = profileTitle.textContent;
   jobInput.placeholder = profileDescription.textContent;
@@ -169,11 +159,10 @@ function openImagePopup(cardElement) { // openPopup - openImagePopup => openPopu
   popupImageText.alt = cardElement.name; //элемент массива
 
   addPopupOpened(popupImageWindow);
-  addPopupAnimated(popupImageWindow);
 }
  
 enableValidation();
-
+addPopupAnimated(popupImageWindow);
 
 const profileImage = document.querySelector('.profile__image');
 const card = document.querySelector('.card');
@@ -188,57 +177,87 @@ const card = document.querySelector('.card');
 
 // --------------- ПРОМИС --------------- //
 
-Promise.all([updateUserFromServer(), updateCardsFromServer()])
+Promise.all([updatesUser(), updatesCards()])
   .then(([userData, cardData]) => {
-    
-    console.log(userData);    
-    console.log(cardData);
     
     profileTitle.textContent = userData.name;
     profileDescription.textContent = userData.about;
     profileImage.style.backgroundImage = (`url(${userData.avatar})`);
 
     const pageOwnerId = userData._id; // назначаем переменную хозяина страницы
-    console.log(pageOwnerId); // 0831699e8c089d4fe917fe41 (правильно)
     
     cardData.forEach((card) => { 
     
       const cardOwnerId = card.owner._id; // назначаем переменную автора карточки
-      console.log(cardOwnerId); //688d72b1e612f990d333e149
       const cardId = card._id;
       
-    }); 
-    
-    addCard(cardData, pageOwnerId); 
-  });
+    });
+     
+  addCard(cardData, pageOwnerId); 
+
+});
+
+
+
+
+
+
+
+
+
+
+// --------------- Вводим данные в форму редактирования профиля  ---------------- //
+
+addPopupAnimated(profilePopup);
+
+function handleFormSubmit(evt) {// функция редактирования профиля
+
+  evt.preventDefault();
+  profileTitle.textContent = nameInput.value;  
+  profileDescription.textContent = jobInput.value; 
+
+  removePopupOpened(profilePopup); 
+}
+
+formEditProfile.addEventListener('submit', handleFormSubmit);
+
 
 //---------------- Редактирование профиля на сервере ----------------//
 // saveUserToServer - функция редактирования профиля на сервере
 
-formElement.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
+formEditProfile.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
   event.preventDefault();
 
-  renderLoading(true);
+  const button = formEditProfile.querySelector('.popup__button');
+  renderLoading(true, button); // второй аргумент - кнопка, у которой меняется текст
 
   const newUserFromInput = {
     "name": nameInput.value,
     "about": jobInput.value,
   }
 
-  saveUserToServer(newUserFromInput).then((data) => {
+  savesUser(newUserFromInput).then((data) => {
+      console.log(data)
+    })
+          
+    .catch((err) => {
+      console.log(err)
+    })
 
-     console.log(data)
- 
-     .catch((err) => {
-       console.log(err)
-     })
-
-     .finally(() => {
-     renderLoading(false);
-     });
-  });
+    .finally(() => {
+      renderLoading(false, button); // второй аргумент - кнопка, у которой меняется текст 
+    });
 });
   
+
+
+
+
+
+
+
+
+
 
 //---------------- Добавление карточки на сервер ----------------//
 // saveCardToServer - Функция сохранения карточки на сервере
@@ -255,36 +274,38 @@ formAvatar.addEventListener('submit', function(event) { // отправляем 
   event.preventDefault();
   console.log(inputAvatar.value);
 
-  renderLoading(true);
+  const button = formAvatar.querySelector('.popup__button');
+  renderLoading(true, button);
 
   const newUserAvatar = {
     "avatar": inputAvatar.value,
   }
 
-  saveAvatarToServer(newUserAvatar).then((data) => {
+  // https://st.peopletalk.ru/wp-content/uploads/2024/01/7582018093978a7ad840211319501d5b.jpg
+
+  savesAvatar(newUserAvatar).then((data) => {
  
-     profileImage.style.backgroundImage = (`url(${data.avatar})`)
+    profileImage.style.backgroundImage = (`url(${data.avatar})`);
+    removePopupOpened(avatarPopup)
+    })
+      
+    .catch((err) => {
+      console.log(err)
+    })
 
-      .catch((err) => {
-        console.log(err)
-      })
-
-      .finally(() => {
-      renderLoading(false);
-    });
-  });
-
-  removePopupOpened(avatarPopup);
+    .finally(() => {
+      renderLoading(false, button);
+    }); 
+  
 });
 
-
-// ------------ Функция уведомления о процессе загрузки ------------ //
+// ------------ Функция уведомления о процессе загрузки находится в utils.js ------------ //
 // saveAvatarToServer saveUserToServer saveCardToServer 
 
-function renderLoading(isLoading) {
+function renderLoading(isLoading, button) {
   if (isLoading) {
-    savePlaceButton.innerHTML = "Сохранение...";
+    button.innerHTML = "Сохранение...";
   } else {
-    savePlaceButton.innerHTML = "Сохранить";
+    button.innerHTML = "Сохранить";
   }
 }

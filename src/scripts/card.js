@@ -1,8 +1,8 @@
 export { makeCard, deleteCard, activeLike };
 
-import { deleteCardFromServer } from './api.js';
-import { putLIkeOnServer } from './api.js';
-import { removeLikeFromServer } from './api.js';
+import { deletesCard } from './api.js';
+import { putsLIke } from './api.js';
+import { removesLike } from './api.js';
 
 
  
@@ -12,21 +12,34 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack, 
 
     const cardTemplate = document.querySelector('#card-template').content; // берем шаблон
     const placesItem = cardTemplate.querySelector('.places__item').cloneNode(true); // клонируем его, создаем объект
+    const placesItemImage = placesItem.querySelector('.card__image');
 
     placesItem.querySelector('.card__title').textContent = cardElement.name; //элемент массива 
-    placesItem.querySelector('.card__image').src = cardElement.link; //элемент массива
-    placesItem.querySelector('.card__image').alt = cardElement.name; //элемент массива
+    placesItemImage.src = cardElement.link; //элемент массива
+    placesItemImage.alt = cardElement.name; //элемент массива
 
-    // функция колбэк - удаление карточки
-
+    // функция колбэк - удаление карточки      
+    // отображаем корзинку только на своей карточке
+    
     const deleteButton = placesItem.querySelector('.card__delete-button'); // назначаем кнопку удаления 
+    const cardOwnerId = cardElement.owner._id;
+
+    if (cardOwnerId !== userId) { 
+      deleteButton.classList.add('invisible');
+    };
+    
     deleteButton.addEventListener('click', () => { // по нажатию на кнопку запускается колбэк
       deleteCallBack(placesItem, cardElement); // 
     }); 
 
     // функция колбэк - лайк картинки 
+    // ------- отображаем количество лайков карточки ------- //
+
+    const likesNumber = cardElement.likes.length;
     const likeCount = placesItem.querySelector('.card__like-count'); 
     const likeButton = placesItem.querySelector('.card__like-button'); // назначаем кнопку лайк
+    likeCount.innerHTML = likesNumber;
+
     likeButton.addEventListener('click', () => { // по нажатию на кнопку запускается колбэк
       likeCallBack(likeButton, cardElement, userId, likeCount);  
     });
@@ -40,61 +53,46 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack, 
  
     // выводим карточки на страницу
 
-    return placesItem;
-  }
-
+  return placesItem;
+}
+  
 // ----------------- Функции - колбэки ----------------- //
 
 function deleteCard(item, data) { //deleteCard => deleteCallBack при объявлении addCard card.js
-   item.remove(); //убираем карточку
-   deleteCardFromServer(data); // функция удаления карточки с сервера принимает аргументом данные из массива
+  
+  deletesCard(data).then((data) => {
+    console.log(data);
+    item.remove() 
+  })
+  .catch((err) => {
+    console.log(err)
+  })    
 };
 
 function activeLike(button, dataCard, user, count) { // activeLike => likeCallBack при объявлении addCard card.js
-    console.log('что такое дата');
-    console.log(dataCard);
-
-
-    console.log('сколько сердечек');
+       
     const arrLikes = dataCard.likes;
-    console.log(arrLikes.length);
-    
-    console.log('что за кнопка');
-    console.log(button);    
     
     if (button.classList.contains('card__like-button_is-active')) {
       button.classList.remove('card__like-button_is-active');
-      console.log('по этой карточке уже кликали');
 
-      removeLikeFromServer(dataCard).then((data) => {
-        console.log('получили данные с сервера');
-        console.log(data);
-        console.log('получили массив лайков');
-        console.log(data.likes);
-        console.log('куда попадают данные о количестве сердечек')
-        console.log(count); // число лайкков под сердечком  
-        
+      removesLike(dataCard).then((data) => {             
         const currentCount = parseInt(data.likes.length, 10);
-        console.log(currentCount);
         count.textContent = currentCount;
-      })        
+      })
+      .catch((err) => {
+        console.log(err)
+      })      
       
     } else {
       button.classList.add('card__like-button_is-active');
-      console.log('по этой карточке еще не кликали');
 
-      putLIkeOnServer(dataCard).then((data) => {
-        console.log('получили данные с сервера');
-        console.log(data);
-        console.log('получили массив лайков');
-        console.log(data.likes);
-        console.log('куда попадают данные о количестве сердечек')
-        console.log(count); // число лайкков под сердечком  
-
+      putsLIke(dataCard).then((data) => {
         const currentCount = parseInt(data.likes.length, 10);
-        console.log(currentCount);
         count.textContent = currentCount;
-      })  
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
-    
 }
