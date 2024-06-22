@@ -72,7 +72,7 @@ function makeNewCardData(evt) { // функция добавления карт�
   evt.preventDefault();
   
   const button = formElementPlace.querySelector('.popup__button');
-  renderLoading(true, button);
+  button.innerHTML = "Сохранение...";
   console.log(button);
   console.log('это кнопка сохранить');
   
@@ -97,8 +97,8 @@ function makeNewCardData(evt) { // функция добавления карт�
     })
 
     .finally(() => {
-      renderLoading(false, button);
-      console.log(button);   
+      button.innerHTML = "Сохранить...";
+      console.log(button);
     });
 
     removePopupOpened(placePopup);     
@@ -176,24 +176,6 @@ Promise.all([updatesUser(), updatesCards()])
     console.error(error)
 });
 
-
-/*
-Promise.all([promise1, promise2, promise3])
-  .then(([response1, response2, response3 ]) => {
-    console.log(response1)
-    console.log(response2)
-    console.log(response3)
-  })
-  .catch(error => {
-    console.error(error)
-    // error
-  })
-*/
-
-
-
-
-
 // --------------- Вводим данные в форму редактирования профиля  ---------------- //
 // ---------------------- Редактирование профиля на сервере ----------------------//
 // savesUser - функция редактирования профиля на сервере     
@@ -207,7 +189,7 @@ formEditProfile.addEventListener('submit', function(event) { // отправля
   removePopupOpened(profilePopup); 
 
   const button = formEditProfile.querySelector('.popup__button');
-  renderLoading(true, button); // второй аргумент - кнопка, у которой меняется текст
+  button.innerHTML = "Сохранение...";
 
   const newUserFromInput = {
     "name": nameInput.value,
@@ -223,7 +205,8 @@ formEditProfile.addEventListener('submit', function(event) { // отправля
     })
 
     .finally(() => {
-      renderLoading(false, button); // второй аргумент - кнопка, у которой меняется текст 
+      button.innerHTML = "Сохранить";
+      console.log(button);
     });
 });
   
@@ -244,7 +227,7 @@ formAvatar.addEventListener('submit', function(event) { // отправляем 
   console.log(inputAvatar.value);
 
   const button = formAvatar.querySelector('.popup__button');
-  renderLoading(true, button);
+  button.innerHTML = "Сохранение...";
 
   const newUserAvatar = {
     "avatar": inputAvatar.value,
@@ -263,18 +246,8 @@ formAvatar.addEventListener('submit', function(event) { // отправляем 
     })
 
     .finally(() => {
-      renderLoading(false, button);
+      button.innerHTML = "Сохранить";
+      console.log(button);
     }); 
   
 });
-
-// ------------ Функция уведомления о процессе загрузки находится в utils.js ------------ //
-// savesAvatar savesUser savesCard 
-
-function renderLoading(isLoading, button) {
-  if (isLoading) {
-    button.innerHTML = "Сохранение...";
-  } else {
-    button.innerHTML = "Сохранить";
-  }
-}
