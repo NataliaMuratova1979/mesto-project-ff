@@ -1,9 +1,21 @@
-export { /*openPopupWindow,*/ enableValidation, clearValidation };
+export { /*openPopupWindow,*/ enableValidation, clearValidation, validationConfig };
 
 // -------------------- Валидация форм -------------------- //
 
 // formSelector: '.popup__form'  - html-элемент формы
 // inputSelector: '.popup__input' - html-элемент поле ввода 
+
+const validationConfig = {
+    formSelector: '.popup__form',  // validationConfig.formSelector
+    inputSelector: '.popup__input', // validationConfig.inputSelector
+    submitButtonSelector: '.popup__button', // validationConfig.submitButtonSelector
+    inactiveButtonClass: 'popup__button_disabled', // validationConfig.inactiveButtonClass
+    inputErrorClass: 'popup__input_type_error', // validationConfig.inputErrorClass
+    errorClass: 'popup__error_visible' // validationConfig.errorClass
+};
+console.log(validationConfig);
+
+
 
 function showInputError(formSelector, inputSelector, errorMessage) {
   
@@ -26,8 +38,7 @@ function hideInputError(formSelector, inputSelector) {
     errorElement.classList.remove('form__input-error_active'); // убираем подпись с сообщением об ошибке
     errorElement.textContent = ''; // убираем сообщение об ошибке
 };
-  
-  
+    
   
   // formSelector: '.popup__form'  - html-элемент форма
   // inputSelector: '.popup__input' - html-элемент поле ввода 
@@ -73,11 +84,11 @@ function checkInputValidity(formSelector, inputSelector) {
   // Добавляем слушатель событий всем полям ввода внутри формы
   // Функция setEventListeners принимает параметром элемент формы и добавляет полям нужные обработчики
   
-  function setEventListeners(formSelector) {
+  function setEventListeners(formSelector, validationConfig) {
     // добавляет обработчики сразу всем полям формы
   
-    const inputList = Array.from(formSelector.querySelectorAll('.popup__input')); 
-    const buttonElement = formSelector.querySelector('.popup__button');
+    const inputList = Array.from(formSelector.querySelectorAll(validationConfig.inputSelector)); 
+    const buttonElement = formSelector.querySelector(validationConfig.submitButtonSelector);
   
     toggleButtonState(inputList, buttonElement); // блокируем кнопку с самого начала
   
@@ -91,23 +102,24 @@ function checkInputValidity(formSelector, inputSelector) {
     });
   };
   
+
   // Добавление обработчиков всем формам
   
-  function enableValidation() {
-    const formList = Array.from(document.querySelectorAll('.popup__form'));
+  function enableValidation(validationConfig) {
+    const formList = Array.from(document.querySelectorAll(validationConfig.formSelector));
   
     formList.forEach((formSelector) => {
-      setEventListeners(formSelector);
+      setEventListeners(formSelector, validationConfig);
     });
   };
   
   
   // -------------------- функция очистки ошибок валидации -------------------- //
   
-  function clearValidation(formToClear) { 
+  function clearValidation(formToClear, validationConfig) { 
   
-    const inputsToClear = Array.from(formToClear.querySelectorAll('.popup__input'));
-    const buttonToUnactive = formToClear.querySelector('.popup__button');
+    const inputsToClear = Array.from(formToClear.querySelectorAll(validationConfig.inputSelector));
+    const buttonToUnactive = formToClear.querySelector(validationConfig.submitButtonSelector);
       
     inputsToClear.forEach((inputToClear) => {
         hideInputError(formToClear, inputToClear);

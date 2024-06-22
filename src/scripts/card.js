@@ -33,7 +33,7 @@ function makeCard(cardElement, deleteCallBack, likeCallBack, openPopupCallBack, 
     }); 
 
     // функция колбэк - лайк картинки 
-    // ------- отображаем количество лайков карточки ------- //
+    // отображаем количество лайков карточки //
 
     const likesNumber = cardElement.likes.length;
     const likeCount = placesItem.querySelector('.card__like-count'); 

@@ -1,7 +1,7 @@
 import './pages/index.css'; 
 import { makeCard, deleteCard, activeLike } from './scripts/card.js';
 import { /*openPopupWindow,*/ addPopupOpened, closeModal, addPopupAnimated, removePopupOpened } from './scripts/modal.js';
-import { enableValidation, clearValidation } from './scripts/validation.js';
+import { enableValidation, clearValidation, validationConfig } from './scripts/validation.js';
 import { savesAvatar, savesCard, savesUser, updatesCards, updatesUser } from './scripts/api.js';
 //import { renderLoading } from './scripts/utils.js';
 
@@ -66,28 +66,6 @@ function addCard(cardArray, userId) { // cardArray - массив карточе
   });
 }    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // --------------- Вводим данные в форму добавления новой карточки  ---------------- //
 
 function makeNewCardData(evt) { // функция добавления карточки 
@@ -133,21 +111,21 @@ formElementPlace.addEventListener('submit', makeNewCardData);
 
 openEditButton.addEventListener('click', function (event) {
 
-  nameInput.placeholder = profileTitle.textContent;
-  jobInput.placeholder = profileDescription.textContent;
+  //nameInput.placeholder = profileTitle.textContent;
+  //jobInput.placeholder = profileDescription.textContent;
 
-  clearValidation(formEditProfile); 
+  clearValidation(formEditProfile, validationConfig); 
   addPopupOpened(profilePopup);  
 
-  nameInput.placeholder = profileTitle.textContent;
-  jobInput.placeholder = profileDescription.textContent;
+  nameInput.value = profileTitle.textContent;
+  jobInput.value = profileDescription.textContent;
 
  });
 
 openAddButton.addEventListener('click', function (event) {// добавляем карточку
 
   addPopupOpened(placePopup);
-  clearValidation(formElementPlace);
+  clearValidation(formElementPlace, validationConfig);
 });
 
 //------------------ Функция отрытия большой картинки ------------------ //
@@ -161,18 +139,18 @@ function openImagePopup(cardElement) { // openPopup - openImagePopup => openPopu
   addPopupOpened(popupImageWindow);
 }
  
-enableValidation();
+enableValidation(validationConfig);
 addPopupAnimated(popupImageWindow);
 
 const profileImage = document.querySelector('.profile__image');
 const card = document.querySelector('.card');
 
 //---------------- Загрузка информации о пользователе с сервера ----------------//
-// updateUserFromServer - функция загрузки информации о пользователе с сервера
+// updatesUser - функция загрузки информации о пользователе с сервера
 
   
 //---------------- Загрузка карточек с сервера ----------------//
-// updateCardsFromServer - функция загрузки карточек с сервера
+// updatesCards - функция загрузки карточек с сервера
 
 
 // --------------- ПРОМИС --------------- //
@@ -187,46 +165,46 @@ Promise.all([updatesUser(), updatesCards()])
     const pageOwnerId = userData._id; // назначаем переменную хозяина страницы
     
     cardData.forEach((card) => { 
-    
       const cardOwnerId = card.owner._id; // назначаем переменную автора карточки
       const cardId = card._id;
-      
     });
      
-  addCard(cardData, pageOwnerId); 
-
+  addCard(cardData, pageOwnerId)
+  })
+  
+  .catch(error => {
+    console.error(error)
 });
 
 
-
-
-
+/*
+Promise.all([promise1, promise2, promise3])
+  .then(([response1, response2, response3 ]) => {
+    console.log(response1)
+    console.log(response2)
+    console.log(response3)
+  })
+  .catch(error => {
+    console.error(error)
+    // error
+  })
+*/
 
 
 
 
 
 // --------------- Вводим данные в форму редактирования профиля  ---------------- //
-
-addPopupAnimated(profilePopup);
-
-function handleFormSubmit(evt) {// функция редактирования профиля
-
-  evt.preventDefault();
-  profileTitle.textContent = nameInput.value;  
-  profileDescription.textContent = jobInput.value; 
-
-  removePopupOpened(profilePopup); 
-}
-
-formEditProfile.addEventListener('submit', handleFormSubmit);
-
-
-//---------------- Редактирование профиля на сервере ----------------//
-// saveUserToServer - функция редактирования профиля на сервере
+// ---------------------- Редактирование профиля на сервере ----------------------//
+// savesUser - функция редактирования профиля на сервере     
 
 formEditProfile.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
   event.preventDefault();
+
+  profileTitle.textContent = nameInput.value;  
+  profileDescription.textContent = jobInput.value;
+
+  removePopupOpened(profilePopup); 
 
   const button = formEditProfile.querySelector('.popup__button');
   renderLoading(true, button); // второй аргумент - кнопка, у которой меняется текст
@@ -250,23 +228,14 @@ formEditProfile.addEventListener('submit', function(event) { // отправля
 });
   
 
-
-
-
-
-
-
-
-
-
 //---------------- Добавление карточки на сервер ----------------//
-// saveCardToServer - Функция сохранения карточки на сервере
+// savesCard - Функция сохранения карточки на сервере
 
 //---------------- Обновление аватара пользователя ----------------//
-// saveAvatarToServer - функция редактирования профиля на сервере
+// savesAvatar - функция редактирования профиля на сервере
 
 avatarButton.addEventListener('click', function (event) { // Открываем форму редактирования аватара пользователя
-  clearValidation(formAvatar);
+  clearValidation(formAvatar, validationConfig);
   addPopupOpened(avatarPopup);
 });
 
@@ -300,7 +269,7 @@ formAvatar.addEventListener('submit', function(event) { // отправляем 
 });
 
 // ------------ Функция уведомления о процессе загрузки находится в utils.js ------------ //
-// saveAvatarToServer saveUserToServer saveCardToServer 
+// savesAvatar savesUser savesCard 
 
 function renderLoading(isLoading, button) {
   if (isLoading) {

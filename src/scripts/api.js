@@ -18,7 +18,7 @@ function checkResponse(res) {
     return res.json();
     }
 
-    return Promise.reject(`Ошибка: ${res.status}`);
+  return Promise.reject(`Ошибка: ${res.status}`);
 }
 
 
@@ -32,7 +32,7 @@ function deletesCard(card) {  // card => data в функции makeCard
         method: 'DELETE',
         headers: config.headers
     })
-    
+
     .then(checkResponse);
   } 
 
@@ -65,8 +65,9 @@ url = url.replace('cardId', cardId);
  return fetch(url, {     
     method: 'DELETE', 
     headers: config.headers
-}) 
-.then(checkResponse);
+  }) 
+
+  .then(checkResponse);
 } 
 
 // ------------- функция редактирования профиля на сервере ------------- //
@@ -78,9 +79,9 @@ function savesAvatar(avatarLink) {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify(avatarLink),
-    })
+  })
 
-    .then(checkResponse);
+  .then(checkResponse);
 }
 
 
@@ -94,9 +95,9 @@ function savesCard(newCard) {  // функция редактирования к
     method: 'POST',
     headers: config.headers,
     body: JSON.stringify(newCard),
-    })
+  })
 
-    .then(checkResponse);   
+  .then(checkResponse);   
 }
 
 
@@ -110,7 +111,7 @@ function savesUser(newUser) {
     body: JSON.stringify(newUser),
     })
 
-    .then(checkResponse);
+  .then(checkResponse);
 }
 
 
@@ -121,7 +122,7 @@ function updatesCards() {
     headers: config.headers
     })
 
-    .then(checkResponse);
+  .then(checkResponse);
 }
 
 
@@ -132,5 +133,5 @@ function updatesUser() {
     headers: config.headers
     })
 
-    .then(checkResponse);
+  .then(checkResponse);
 } 
