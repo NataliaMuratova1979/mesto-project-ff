@@ -90,6 +90,8 @@ function makeNewCardData(evt) { // функция добавления карт�
     const cardToInsert = makeCard(cardDataFromServer, deleteCard, activeLike, openImagePopup, userId);
 
     placesList.prepend(cardToInsert);
+
+    removePopupOpened(placePopup);   
     })
 
     .catch((err) => {
@@ -101,7 +103,6 @@ function makeNewCardData(evt) { // функция добавления карт�
       console.log(button);
     });
 
-    removePopupOpened(placePopup);     
 };
 
 formElementPlace.addEventListener('submit', makeNewCardData); 
@@ -181,12 +182,7 @@ Promise.all([updatesUser(), updatesCards()])
 // savesUser - функция редактирования профиля на сервере     
 
 formEditProfile.addEventListener('submit', function(event) { // отправляем данные на сервер по клику
-  event.preventDefault();
-
-  profileTitle.textContent = nameInput.value;  
-  profileDescription.textContent = jobInput.value;
-
-  removePopupOpened(profilePopup); 
+  event.preventDefault();   
 
   const button = formEditProfile.querySelector('.popup__button');
   button.innerHTML = "Сохранение...";
@@ -197,7 +193,11 @@ formEditProfile.addEventListener('submit', function(event) { // отправля
   }
 
   savesUser(newUserFromInput).then((data) => {
-      console.log(data)
+
+    profileTitle.textContent = nameInput.value;  
+    profileDescription.textContent = jobInput.value;
+  
+    removePopupOpened(profilePopup);
     })
           
     .catch((err) => {
