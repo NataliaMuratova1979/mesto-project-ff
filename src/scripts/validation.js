@@ -10,32 +10,32 @@ const validationConfig = {
     inputSelector: '.popup__input', // validationConfig.inputSelector
     submitButtonSelector: '.popup__button', // validationConfig.submitButtonSelector
     inactiveButtonClass: 'popup__button_disabled', // validationConfig.inactiveButtonClass
-    inputErrorClass: 'popup__input_type_error', // validationConfig.inputErrorClass
-    errorClass: 'popup__error_visible' // validationConfig.errorClass
+    inputErrorClass: 'form__input_type_error', // validationConfig.inputErrorClass  'popup__input_type_error'
+    errorClass: 'form__input-error_active' // validationConfig.errorClass  'popup__error_visible'
 };
 console.log(validationConfig);
 
 
 
-function showInputError(formSelector, inputSelector, errorMessage) {
+function showInputError(formSelector, inputSelector, errorMessage, validationConfig) {
   
     const errorElement = formSelector.querySelector(`.${inputSelector.id}-error`); // находим span c классом как в input concat -error
     
     // находим элемент ошибки внутри самой функции
     
-    inputSelector.classList.add('form__input_type_error'); // добавляем красную линию 
+    inputSelector.classList.add(validationConfig.inputErrorClass); // добавляем красную линию 
     errorElement.textContent = errorMessage;
-    errorElement.classList.add('form__input-error_active'); // выводим подпись с сообщением об ошибке
+    errorElement.classList.add(validationConfig.errorClass); // выводим подпись с сообщением об ошибке
 };
   
 
-function hideInputError(formSelector, inputSelector) {
+function hideInputError(formSelector, inputSelector, validationConfig) {
   
     const errorElement = formSelector.querySelector(`.${inputSelector.id}-error`); 
       // находим элемент ошибки внутри самой функции
   
-    inputSelector.classList.remove('form__input_type_error'); // убираем красную линию
-    errorElement.classList.remove('form__input-error_active'); // убираем подпись с сообщением об ошибке
+    inputSelector.classList.remove(validationConfig.inputErrorClass); // убираем красную линию
+    errorElement.classList.remove(validationConfig.errorClass); // убираем подпись с сообщением об ошибке
     errorElement.textContent = ''; // убираем сообщение об ошибке
 };
     
@@ -53,9 +53,9 @@ function checkInputValidity(formSelector, inputSelector) {
     }
     
     if (!inputSelector.validity.valid) {
-      showInputError(formSelector, inputSelector, inputSelector.validationMessage);
+      showInputError(formSelector, inputSelector, inputSelector.validationMessage, validationConfig);
     } else {
-      hideInputError(formSelector, inputSelector);
+      hideInputError(formSelector, inputSelector, validationConfig);
     }
   };
   
@@ -63,7 +63,7 @@ function checkInputValidity(formSelector, inputSelector) {
   // проверяем валидность всех полей, чтобы настроить статус кнопки
   
   const hasInvalidInput = (inputList) => {
-    return inputList.some((inputSelector) => {
+      return inputList.some((inputSelector) => {
       return !inputSelector.validity.valid;
     })
   };
@@ -75,7 +75,7 @@ function checkInputValidity(formSelector, inputSelector) {
         buttonElement.disabled = true;
         buttonElement.classList.add(validationConfig.inactiveButtonClass);
     } else { 
-          buttonElement.disabled = false;
+        buttonElement.disabled = false;
         buttonElement.classList.remove(validationConfig.inactiveButtonClass);
     }
   };
@@ -102,7 +102,6 @@ function checkInputValidity(formSelector, inputSelector) {
     });
   };
   
-
   // Добавление обработчиков всем формам
   
   function enableValidation(validationConfig) {
@@ -122,7 +121,7 @@ function checkInputValidity(formSelector, inputSelector) {
     const buttonToUnactive = formToClear.querySelector(validationConfig.submitButtonSelector);
       
     inputsToClear.forEach((inputToClear) => {
-        hideInputError(formToClear, inputToClear);
+        hideInputError(formToClear, inputToClear, validationConfig);
     });
 
     buttonToUnactive.classList.add(validationConfig.inactiveButtonClass);
